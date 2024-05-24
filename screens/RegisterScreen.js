@@ -31,7 +31,7 @@ const RegisterScreen = ({ navigation }) => {
     
   return (
     //avoid keyboard covering input field
-    <ImageBackground source={require('../assets/food-wallpaper.jpg')} style={styles.background}>
+    <ImageBackground source={require('../assets/food-wallpaper3.png')} style={styles.background}>
     <KeyboardAvoidingView 
       style={styles.container}
       behaviour="padding"
@@ -78,21 +78,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     headerText: {
-        color: '#f8f8ec',
+        color: 'black',
         fontSize: 20,
         fontWeight: 'bold',
         paddingBottom: 15,
     },
     text: {
-        color: '#f8f8ec',
-        fontSize: 15,
+        color: 'black',
+        fontSize: 17,
         paddingBottom: 40,
     },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
         width: '100%',
         height: '100%',
     },

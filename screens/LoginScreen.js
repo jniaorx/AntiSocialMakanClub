@@ -47,7 +47,7 @@ const LoginScreen = () => {
     };
 
     return (
-        <ImageBackground source={require('../assets/food-wallpaper.jpg')} style={styles.background}>
+        <ImageBackground source={require('../assets/food-wallpaper3.png')} style={styles.background}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                 <Text style={styles.headerText}>Sign in now</Text>
                 <Text style={styles.text}>Please sign in to continue our app</Text>
@@ -99,21 +99,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     headerText: {
-        color: '#f8f8ec',
+        color: 'black',
         fontSize: 20,
         fontWeight: 'bold',
         paddingBottom: 15,
     },
     text: {
-        color: '#f8f8ec',
-        fontSize: 15,
+        color: 'black',
+        fontSize: 17,
         paddingBottom: 40,
     },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
         width: '100%',
         height: '100%',
     },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         width: '80%',
     },
     forgotPasswordText: {
-        color: '#f8f8ec',
+        color: 'black',
         alignSelf: 'flex-end',
         paddingTop: 3,
     },
@@ -168,10 +168,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     createText: {
-        color: '#f8f8ec',
+        color: '#4b5c5c',
         paddingTop: 30,
     },
     createAccText: {
-        color: '#d2dbc8',
+        color: 'black',
     },
 });
