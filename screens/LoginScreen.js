@@ -1,9 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import auth from '@react-native-firebase/auth';
 
 const LoginScreen = () => {
+    const navigation = useNavigation()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -28,28 +31,6 @@ const LoginScreen = () => {
             }
         });
     };
-
-    const handleRegister = () => {
-        if (!email || !password) {
-            alert('Please enter both email and password.');
-            return;
-          }
-
-        auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            console.log('User account created & signed in!');
-        })
-        .catch(error => {
-            if (error.code === 'auth/email-already-in-use') {
-                alert('That email address is already in use!');
-            } else if (error.code === 'auth/invalid-email') {
-                alert('That email address is invalid!');
-            } else {
-                console.error(error);
-            }
-        })
-    }
 
     const handleForgotPassword = () => {
         if (!email) {
@@ -106,13 +87,19 @@ const LoginScreen = () => {
                 >
                     <Text style={styles.buttonText}>Sign in</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
+                </View>
+
+            <Text style={styles.createText}>
+                Don't have an account?{' '}
+                <Text
                 onPress={() => navigation.navigate('Register')}
-                style={[styles.button, styles.buttonOutline]}
+                style={styles.craeteAccText}
                 >
-                    <Text style={styles.buttonOutlineText}>Register</Text>
-                </TouchableOpacity>
-                </View>  
+                    Create an account
+                </Text>
+            </Text>
+           
+
     </KeyboardAvoidingView>
   )
 }
@@ -169,7 +156,7 @@ const styles = StyleSheet.create({
         padding: 15,
         paddingTop: 15,
         borderRadius: 10, 
-        marginBottom: 5,
+        marginBottom: 7,
     },
     buttonOutline: {
         backgroundColor: '#f8f8ec',
@@ -186,5 +173,12 @@ const styles = StyleSheet.create({
         color: '#61706b',
         fontWeight: '700',
         fontSize: 16,
+    },
+    createText: {
+        color: '#f8f8ec',
+        paddingTop: 30,
+    },
+    craeteAccText: {
+        color: '#d2dbc8',
     }
 })

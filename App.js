@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
+import RegisterScreen from './screens/RegisterScreen';
 import { useEffect, useState } from 'react';
 
 const Stack = createNativeStackNavigator();
@@ -30,10 +31,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        { user ? (
+        {user ? (
           <Stack.Screen name="Home" component={HomeScreen} />
         ) : (
-          <Stack.Screen options={{ headershown: false }} name="Login" component={LoginScreen} /> 
+          <>
+          <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
