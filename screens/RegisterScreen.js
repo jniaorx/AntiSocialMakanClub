@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import auth from '@react-native-firebase/auth';
 
@@ -31,6 +31,7 @@ const RegisterScreen = ({ navigation }) => {
     
   return (
     //avoid keyboard covering input field
+    <ImageBackground source={require('../assets/food-wallpaper.jpg')} style={styles.background}>
     <KeyboardAvoidingView 
       style={styles.container}
       behaviour="padding"
@@ -64,12 +65,18 @@ const RegisterScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </View>  
     </KeyboardAvoidingView>
+    </ImageBackground>
   )
 }
 
 export default RegisterScreen
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     headerText: {
         color: '#f8f8ec',
         fontSize: 20,
@@ -85,7 +92,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#495d5e',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        width: '100%',
+        height: '100%',
     },
     inputContainer: {
         width: '80%',

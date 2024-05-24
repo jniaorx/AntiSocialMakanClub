@@ -1,35 +1,33 @@
 import { useNavigation } from '@react-navigation/native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
 import auth from '@react-native-firebase/auth';
 
 const LoginScreen = () => {
-    const navigation = useNavigation()
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const navigation = useNavigation();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleLogin = () => {
         if (!email || !password) {
             alert('Please enter both email and password.');
             return;
-          }
-    
+        }
+
         auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(() => {
-            console.log('User signed in!');
-        })
-        .catch(error => {
-            if (error.code === 'auth/user-not-found') {
-                alert('User not found. Please register first.');
-            } else if (error.code === 'auth/wrong-password') {
-                alert('Incorrect password. Please try again.');
-            } else {
-                alert(error.message);
-            }
-        });
+            .signInWithEmailAndPassword(email, password)
+            .then(() => {
+                console.log('User signed in!');
+            })
+            .catch(error => {
+                if (error.code === 'auth/user-not-found') {
+                    alert('User not found. Please register first.');
+                } else if (error.code === 'auth/wrong-password') {
+                    alert('Incorrect password. Please try again.');
+                } else {
+                    alert(error.message);
+                }
+            });
     };
 
     const handleForgotPassword = () => {
@@ -39,74 +37,67 @@ const LoginScreen = () => {
         }
 
         auth()
-        .sendPasswordResetEmail(email)
-        .then(() => {
-            alert('Password reset email sent!');
-        })
-        .catch(error => {
-            alert(error.message);
-        });
+            .sendPasswordResetEmail(email)
+            .then(() => {
+                alert('Password reset email sent!');
+            })
+            .catch(error => {
+                alert(error.message);
+            });
     };
-    
-  return (
-    //avoid keyboard covering input field
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behaviour="padding"
-    >
-        <Text style={styles.headerText}>Sign in now</Text>
-        <Text style={styles.text}>Please sign in to continue our app</Text>
-        <View style={styles.inputContainer}>
-            <TextInput 
-            placeholder="Email"
-            placeholderTextColor="#61706b"
-            value={email}
-            onChangeText={text => setEmail(text)}
-            style={styles.input}
-            />
-            <TextInput
-            placeholder="Password"
-            placeholderTextColor="#61706b"
-            value={password}
-            onChangeText={text => setPassword(text)}
-            style={styles.input}
-            secureTextEntry
-            />
-            </View>
 
-            <TouchableOpacity 
-            onPress={handleForgotPassword}
-            style={styles.forgotContainer}>
-                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                onPress={handleLogin}
-                style={styles.button}
-                >
-                    <Text style={styles.buttonText}>Sign in</Text>
-                </TouchableOpacity>
+    return (
+        <ImageBackground source={require('../assets/food-wallpaper.jpg')} style={styles.background}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
+                <Text style={styles.headerText}>Sign in now</Text>
+                <Text style={styles.text}>Please sign in to continue our app</Text>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder="Email"
+                        placeholderTextColor="#61706b"
+                        value={email}
+                        onChangeText={text => setEmail(text)}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Password"
+                        placeholderTextColor="#61706b"
+                        value={password}
+                        onChangeText={text => setPassword(text)}
+                        style={styles.input}
+                        secureTextEntry
+                    />
                 </View>
 
-            <Text style={styles.createText}>
-                Don't have an account?{' '}
-                <Text
-                onPress={() => navigation.navigate('Register')}
-                style={styles.craeteAccText}
-                >
-                    Create an account
+                <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotContainer}>
+                    <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                </TouchableOpacity>
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity onPress={handleLogin} style={styles.button}>
+                        <Text style={styles.buttonText}>Sign in</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <Text style={styles.createText}>
+                    Don't have an account?{' '}
+                    <Text onPress={() => navigation.navigate('Register')} style={styles.createAccText}>
+                        Create an account
+                    </Text>
                 </Text>
-            </Text>
-           
+            </KeyboardAvoidingView>
+        </ImageBackground>
+    );
+};
 
-    </KeyboardAvoidingView>
-  )
-}
-
-export default LoginScreen
+export default LoginScreen;
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     headerText: {
         color: '#f8f8ec',
         fontSize: 20,
@@ -122,7 +113,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#495d5e',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        width: '100%',
+        height: '100%',
     },
     inputContainer: {
         width: '80%',
@@ -155,7 +148,7 @@ const styles = StyleSheet.create({
         width: '80%',
         padding: 15,
         paddingTop: 15,
-        borderRadius: 10, 
+        borderRadius: 10,
         marginBottom: 7,
     },
     buttonOutline: {
@@ -178,7 +171,7 @@ const styles = StyleSheet.create({
         color: '#f8f8ec',
         paddingTop: 30,
     },
-    craeteAccText: {
+    createAccText: {
         color: '#d2dbc8',
-    }
-})
+    },
+});
