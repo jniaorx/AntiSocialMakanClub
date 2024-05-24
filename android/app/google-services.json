@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "655284115803",
+    "project_id": "antisocialmakanclub",
+    "storage_bucket": "antisocialmakanclub.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655284115803:android:4f779598d5f9cf87c2627e",
+        "android_client_info": {
+          "package_name": "com.orbital.antisocialmakanclub2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbbCJFp-0CbJ7oNA93XIqWNYT-byJbdBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
