@@ -47,7 +47,7 @@ const LoginScreen = () => {
     };
 
     return (
-        <ImageBackground source={require('../assets/food-wallpaper3.png')} style={styles.background}>
+        <ImageBackground source={require('../assets/food-wallpaper.jpg')} style={styles.background}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                 <Text style={styles.headerText}>Sign in now</Text>
                 <Text style={styles.text}>Please sign in to continue our app</Text>

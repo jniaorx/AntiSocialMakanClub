@@ -29,6 +29,8 @@ export default function App() {
   if (initializing) return null;
 
   return (
+    <>
+    <StatusBar style="light" />
     <NavigationContainer>
       <Stack.Navigator>
         {user ? (
@@ -41,6 +43,7 @@ export default function App() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </>
   );
 }
 
