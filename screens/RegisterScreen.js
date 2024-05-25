@@ -1,9 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
 import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import auth from '@react-native-firebase/auth';
 
-const RegisterScreen = ({ navigation }) => {
+const RegisterScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
