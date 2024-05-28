@@ -7,8 +7,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const HomeScreen = () => {
+  const [dates, setDates] = useState([]);
+  const [slots, setSlots] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedCanteen, setSelectedCanteen] = useState(null);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const dropdown1Ref = useRef();
   //sign out button
   const handleSignOut = () => {
     auth()
@@ -36,10 +44,6 @@ const HomeScreen = () => {
   ];
 
   //dropdown1
-  const [dates, setDates] = useState([]);
-  const [slots, setSlots] = useState([]);
-  const dropdown1Ref = useRef();
-
   useEffect(() => {
     setTimeout(() => {
       setDates([
@@ -62,6 +66,33 @@ const HomeScreen = () => {
       ]);
     }, 10);
   }, []);
+
+  // to create a request
+  const handleCreateRequest = () => {
+    if (!selectedDate || !selectedSlot) {
+      alert('Please select both a date and a time slot.');
+      return;
+    }
+
+  const request = {
+    date: selectedDate.title,
+    slot: selectedSlot.title,
+    canteen: selectedCanteen ? selectedCanteen.title : null,
+    language: selectedLanguage ? selectedLanguage.title : null,
+    userId: auth().currentUser.uid,
+  };
+
+  firestore()
+  .collection('requests')
+  .add(request)
+  .then(() => {
+    console.log('Request added!', request);
+    alert('Request created succesfully!');
+  })
+  .catch(error => {
+    console.error('Error adding request: ', error);
+  });
+};
 
   return (
     <View style={styles.container}>
@@ -93,6 +124,7 @@ const HomeScreen = () => {
             dropdown1Ref.current.reset();
             setSlots([]);
             setSlots(selectedItem.slots);
+            setSelectedDate(selectedItem);
           }}
           renderButton={(selectedItem, isOpen) => {
             return (
@@ -120,6 +152,7 @@ const HomeScreen = () => {
           data={slots}
           onSelect={(selectedItem) => {
             console.log(`Timeslot selected: ${selectedItem.title}`);
+            setSelectedSlot(selectedItem);
           }}
           renderButton={(selectedItem, isOpen) => {
             return (
@@ -152,6 +185,7 @@ const HomeScreen = () => {
           data={canteens}
           onSelect={(selectedItem) => {
             console.log(`Canteen selected: ${selectedItem.title}`);
+            setSelectedCanteen(selectedItem);
           }}
           renderButton={(selectedItem, isOpen) => {
             return (
@@ -183,6 +217,7 @@ const HomeScreen = () => {
           data={lang}
           onSelect={(selectedItem) => {
             console.log(`Language selected: ${selectedItem.title}`);
+            setSelectedLanguage(selectedItem);
           }}
           renderButton={(selectedItem, isOpen) => {
             return (
@@ -209,10 +244,9 @@ const HomeScreen = () => {
         />
       </View>
 
-      <View style={styles.createButtonContainer}>
+     <TouchableOpacity onPress={handleCreateRequest} style={styles.createButtonContainer}>
         <Text style={styles.createButtonText}>Create</Text>
-      </View>
-
+      </TouchableOpacity>
     </View>
   );
 };
