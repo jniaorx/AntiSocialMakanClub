@@ -67,32 +67,48 @@ const HomeScreen = () => {
     }, 10);
   }, []);
 
-  // to create a request
-  const handleCreateRequest = () => {
+  // To create a request
+  const handleCreateRequest = async () => {
     if (!selectedDate || !selectedSlot) {
       alert('Please select both a date and a time slot.');
       return;
     }
 
-  const request = {
-    date: selectedDate.title,
-    slot: selectedSlot.title,
-    canteen: selectedCanteen ? selectedCanteen.title : null,
-    language: selectedLanguage ? selectedLanguage.title : null,
-    userId: auth().currentUser.uid,
-  };
+    const user = auth().currentUser;
+    if (!user) {
+      alert('You must be logged in to create a request.');
+      return;
+    }
 
-  firestore()
-  .collection('requests')
-  .add(request)
-  .then(() => {
-    console.log('Request added!', request);
-    alert('Request created succesfully!');
-  })
-  .catch(error => {
-    console.error('Error adding request: ', error);
-  });
-};
+    const request = {
+      date: selectedDate.title,
+      slot: selectedSlot.title,
+      canteen: selectedCanteen ? selectedCanteen.title : null,
+      language: selectedLanguage ? selectedLanguage.title : null,
+      userId: user.uid,
+    };
+
+    // to make sure that no duplicated request is made by the same user
+    try {
+      const querySnapshot = await firestore()
+        .collection('requests')
+        .where('userId', '==', user.uid)
+        .where('date', '==', request.date)
+        .where('slot', '==', request.slot)
+        .get();
+
+      if (!querySnapshot.empty) {
+        alert('You have already made a request for this date and time slot.');
+        return;
+      }
+
+      await firestore().collection('requests').add(request);
+      console.log('Request added!', request);
+      alert('Request created successfully!');
+    } catch (error) {
+      console.error('Error adding request: ', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
