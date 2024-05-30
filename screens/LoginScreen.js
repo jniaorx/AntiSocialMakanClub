@@ -99,13 +99,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     headerText: {
-        color: 'black',
+        color: 'white',
         fontSize: 20,
         fontWeight: 'bold',
         paddingBottom: 15,
     },
     text: {
-        color: 'black',
+        color: 'white',
         fontSize: 17,
         paddingBottom: 40,
     },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         width: '80%',
     },
     forgotPasswordText: {
-        color: 'black',
+        color: 'white',
         alignSelf: 'flex-end',
         paddingTop: 3,
     },
@@ -172,6 +172,6 @@ const styles = StyleSheet.create({
         paddingTop: 30,
     },
     createAccText: {
-        color: 'black',
+        color: 'white',
     },
 });
