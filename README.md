@@ -13,7 +13,7 @@ This app aims to address feelings of isolation and loneliness if one were to din
 
 AntiSocialMakanClub helps in promoting a vibrant and inclusive campus culture, where students are able to forge meaningful bonds beyond their immediate circles. This facilitates the sharing of information and insights across various divides, including academic disciplines and residential arrangements.
 
-Core features:
+Proposed Core Features:
 #1 User Authentication - Users can create an account and log in. The app recognises if an incorrect password is submitted and prompts the users to resubmit the correct password.
 #2 Request Creation - Users can create a request detailing the day, time, canteen and spoken language preferences.
 #3 Meal Buddy Matching - Users' request is matched with another user with the same preferences.
