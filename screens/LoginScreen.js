@@ -24,6 +24,8 @@ const LoginScreen = () => {
                     alert('User not found. Please register first.');
                 } else if (error.code === 'auth/wrong-password') {
                     alert('Incorrect password. Please try again.');
+                } else if (error.code == 'auth/invalid-email') {
+                    alert('Incorrect email format. Please enter a valid email address.')
                 } else {
                     alert(error.message);
                 }
