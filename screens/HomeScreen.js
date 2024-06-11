@@ -2,22 +2,17 @@
 home page allows logging out and 
 creating a request by selecting from the options from the dropdowns
 */
-
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { AntDesign } from '@expo/vector-icons';
 
-const HomeScreen = () => {
-  const [dates, setDates] = useState([]);
-  const [slots, setSlots] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [selectedCanteen, setSelectedCanteen] = useState(null);
-  const [selectedLanguage, setSelectedLanguage] = useState(null);
-  const dropdown1Ref = useRef();
-  //sign out button
+// Home tab that allows sign out 
+function HomeTab() {
+  // Sign out button 
   const handleSignOut = () => {
     auth()
       .signOut()
@@ -25,25 +20,52 @@ const HomeScreen = () => {
       .catch(error => console.error('Error signing out: ', error));
   };
 
-  //dropdown3
+  return (
+    <View style={styles.container}>
+      <View style={styles.wlcContainer}>
+        <Text style={styles.wlcTxt}>Welcome Back to AntiSocialMakanClub</Text>
+      </View>
+
+      <View style={styles.altContainer}>
+        <Text style={styles.altText}>or</Text>
+      </View>
+
+      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+        <Text style={styles.buttonText}>Sign out</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+// create request tab
+function RequestCreation() {
+  const [dates, setDates] = useState([]);
+  const [slots, setSlots] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedCanteen, setSelectedCanteen] = useState(null);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const dropdown1Ref = useRef();
+  
+  // dropdown3
   const lang = [{ title: 'English'},
                 { title: 'Mandarin'},
                 { title: 'Korean'},
                 { title: 'Japanese'},
                 { title: 'Spanish'},
                 { title: 'German'},
-                { title: 'Other'},
-  ];
-
-  //dropdown2
+                { title: 'Other'},  
+  ];  
+  
+  // dropdown2
   const canteens = [{ title: 'Frontier' }, 
                     { title: 'PGP' },
                     { title: 'The Deck' },
                     { title: 'Terrace' },
                     { title: 'Techno Edge' }
   ];
-
-  //dropdown1
+  
+  // dropdown1
   useEffect(() => {
     setTimeout(() => {
       setDates([
@@ -66,20 +88,20 @@ const HomeScreen = () => {
       ]);
     }, 10);
   }, []);
-
-  // To create a request
+  
+  // to create a request
   const handleCreateRequest = async () => {
     if (!selectedDate || !selectedSlot) {
       alert('Please select both a date and a time slot.');
       return;
     }
-
-    const user = auth().currentUser;
+  
+  const user = auth().currentUser;
     if (!user) {
       alert('You must be logged in to create a request.');
       return;
     }
-
+  
     const request = {
       date: selectedDate.title,
       slot: selectedSlot.title,
@@ -87,7 +109,7 @@ const HomeScreen = () => {
       language: selectedLanguage ? selectedLanguage.title : null,
       userId: user.uid,
     };
-
+  
     // to make sure that no duplicated request is made by the same user
     try {
       const querySnapshot = await firestore()
@@ -96,12 +118,12 @@ const HomeScreen = () => {
         .where('date', '==', request.date)
         .where('slot', '==', request.slot)
         .get();
-
+  
       if (!querySnapshot.empty) {
         alert('You have already made a request for this date and time slot.');
         return;
       }
-
+  
       await firestore().collection('requests').add(request);
       console.log('Request added!', request);
       alert('Request created successfully!');
@@ -109,25 +131,9 @@ const HomeScreen = () => {
       console.error('Error adding request: ', error);
     }
   };
-
+  
   return (
-    <View style={styles.container}>
-      <View style={styles.wlcContainer}>
-        <Text style={styles.wlcTxt}>Welcome Back to AntiSocialMakanClub</Text>
-      </View>
-
-      <View style={styles.altContainer}>
-        <Text style={styles.altText}>or</Text>
-      </View>
-
-      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-        <Text style={styles.buttonText}>Sign out</Text>
-      </TouchableOpacity>
-
-      <View style={styles.requestContainer}>
-        <Text style={styles.requestText}>Create a Request</Text>
-      </View>
-
+    <View style={styles.requestContainer}>
       <View style={styles.instructionsContainer}>
         <Text style={styles.instructionsText}>Select a Date and Time to start matching!</Text>
       </View>
@@ -265,12 +271,97 @@ const HomeScreen = () => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
-export default HomeScreen;
+function Profile() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Placeholder Text</Text>
+    </View>
+  );
+}
+
+function ViewMatch () {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Placeholder Text</Text>
+    </View>
+  );
+}
+
+function Chats() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>Placeholder Text</Text>
+    </View>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
+export default function HomeScreen() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarLabelStyle: { fontWeight: 'bold'},
+      }}>
+      <Tab.Screen 
+        name="Home" 
+        component={HomeTab} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="home" color="#ff000" size={20}/>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Create Request" 
+        component={RequestCreation} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="pluscircleo" color="#ff000" size={20}/>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Your Match" 
+        component={ViewMatch} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="infocirlceo" color="#ff000" size={20}/>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Chats" 
+        component={Chats} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="message1" color="#ff000" size={20}/>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={Profile} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="user" color="#ff000" size={20}/>
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    //backgroundColor: '#BFF0EF',
+  },
+  requestContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -281,7 +372,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 20,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 500,
   },
   buttonText: {
     color: 'white',
@@ -293,7 +384,7 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 50,
   },
   wlcTxt: {
     fontSize: 21.5,
@@ -301,32 +392,19 @@ const styles = StyleSheet.create({
     color: '#151E26',
   },
   altContainer: {
-    marginTop: 30,
+    marginTop: 60,
     alignItems: 'center',
   },
   altText: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 70,
-  }, 
-  requestContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: 45,
-    //backgroundColor: '#4682B4',
-    alignItems: 'center',
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  requestText: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },  
   instructionsText: {
     fontSize: 16.5,
     fontWeight: 'bold',
     color: '#151E26',
+    marginTop: 70,
   },
   instructions2Text: {
     fontSize: 15,
