@@ -1,16 +1,16 @@
 /*
-home page allows logging out and 
-creating a request by selecting from the options from the dropdowns
+navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
-import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-// Home tab that allows sign out 
+// First tab: Home 
 function HomeTab() {
   // Sign out button 
   const handleSignOut = () => {
@@ -37,17 +37,52 @@ function HomeTab() {
   );
 }
 
-// create request tab
+// Second tab: Create Request
 function RequestCreation() {
-  const [dates, setDates] = useState([]);
-  const [slots, setSlots] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedSlot, setSelectedTime] = useState(null);
   const [selectedCanteen, setSelectedCanteen] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
-  const dropdown1Ref = useRef();
   
-  // dropdown3
+  // date picker
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(false);
+    setDate(currentDate);
+    console.log("Date: ", currentDate.toDateString());
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+ 
+  // dropdown for time slots
+  const timeslot = [{ title: '11am - 12pm' }, 
+                    { title: '12pm - 1pm' }, 
+                    { title: '1pm - 2pm' }, 
+                    { title: '2pm - 3pm' }, 
+                    { title: '3pm - 4pm' }, 
+                    { title: '4pm - 5pm' }, 
+                    { title: '5pm - 6pm' }
+  ]
+
+  // dropdown for canteen
+  const canteens = [{ title: 'Frontier' }, 
+                    { title: 'PGP' },
+                    { title: 'The Deck' },
+                    { title: 'Terrace' },
+                    { title: 'Techno Edge' }
+  ];
+
+  // dropdown for language
   const lang = [{ title: 'English'},
                 { title: 'Mandarin'},
                 { title: 'Korean'},
@@ -55,43 +90,11 @@ function RequestCreation() {
                 { title: 'Spanish'},
                 { title: 'German'},
                 { title: 'Other'},  
-  ];  
-  
-  // dropdown2
-  const canteens = [{ title: 'Frontier' }, 
-                    { title: 'PGP' },
-                    { title: 'The Deck' },
-                    { title: 'Terrace' },
-                    { title: 'Techno Edge' }
-  ];
-  
-  // dropdown1
-  useEffect(() => {
-    setTimeout(() => {
-      setDates([
-        { title: 'Today', 
-          slots: [{ title: '11am - 12pm' }, 
-                  { title: '12pm - 1pm' }, 
-                  { title: '1pm - 2pm' }, 
-                  { title: '2pm - 3pm' }, 
-                  { title: '3pm - 4pm' }, 
-                  { title: '4pm - 5pm' }, 
-                  { title: '5pm - 6pm' }]},
-        { title: 'Tomorrow', 
-          slots: [{ title: '11am - 12pm' }, 
-                  { title: '12pm - 1pm' }, 
-                  { title: '1pm - 2pm' }, 
-                  { title: '2pm - 3pm' }, 
-                  { title: '3pm - 4pm' }, 
-                  { title: '4pm - 5pm' }, 
-                  { title: '5pm - 6pm' }]},
-      ]);
-    }, 10);
-  }, []);
+  ]; 
   
   // to create a request
   const handleCreateRequest = async () => {
-    if (!selectedDate || !selectedSlot) {
+    if (!date || !selectedSlot) {
       alert('Please select both a date and a time slot.');
       return;
     }
@@ -103,7 +106,7 @@ function RequestCreation() {
     }
   
     const request = {
-      date: selectedDate.title,
+      date: date.toDateString(),
       slot: selectedSlot.title,
       canteen: selectedCanteen ? selectedCanteen.title : null,
       language: selectedLanguage ? selectedLanguage.title : null,
@@ -138,48 +141,36 @@ function RequestCreation() {
         <Text style={styles.instructionsText}>Select a Date and Time to start matching!</Text>
       </View>
 
-      <View style={styles.dropdown1Container}>
+      <View style={styles.dateContainer}>
+      <TouchableOpacity style={styles.dropdownTimeButtonStyle} onPress={showDatepicker}>
+          <Text style={styles.dropdownTimeButtonTxtStyle}>
+            {date ? date.toDateString() : "Select a date"}
+          </Text>
+        </TouchableOpacity>
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode="date"
+            is24Hour={true}
+            onChange={onChange}
+          />
+        )}
+      </View>
+
+      <View style={styles.dropdownTimeContainer}>
         <SelectDropdown
-          data={dates}
-          onSelect={(selectedItem) => {
-            console.log(`Day selected: ${selectedItem.title}`);
-            dropdown1Ref.current.reset();
-            setSlots([]);
-            setSlots(selectedItem.slots);
-            setSelectedDate(selectedItem);
-          }}
-          renderButton={(selectedItem, isOpen) => {
-            return (
-              <View style={styles.dropdown1ButtonStyle}>
-                <Text style={styles.dropdown1ButtonTxtStyle}>{selectedItem?.title || 'Select a day'}</Text>
-              </View>
-            );
-          }}
-          renderItem={(item, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdown1ItemStyle,
-                  ...(isSelected && {backgroundColor: '#D2D9DF'}),
-                }}>
-                <Text style={styles.dropdown1ItemTxtStyle}>{item.title}</Text>
-              </View>
-            );
-          }}
-          dropdown1Style={styles.dropdown1MenuStyle}
-        />
-        <View style={{width: 8}} />
-        <SelectDropdown
-          ref={dropdown1Ref}
-          data={slots}
+          data={timeslot}
           onSelect={(selectedItem) => {
             console.log(`Timeslot selected: ${selectedItem.title}`);
-            setSelectedSlot(selectedItem);
+            setSelectedTime(selectedItem);
           }}
           renderButton={(selectedItem, isOpen) => {
             return (
-              <View style={styles.dropdown1ButtonStyle}>
-                <Text style={styles.dropdown1ButtonTxtStyle}>{selectedItem?.title || 'Select a timeslot'}</Text>
+              <View style={styles.dropdownTimeButtonStyle}>
+                <Text style={styles.dropdownTimeButtonTxtStyle}>
+                  {(selectedItem && selectedItem.title) || 'Select a timeslot'}
+                </Text>
               </View>
             );
           }}
@@ -187,19 +178,20 @@ function RequestCreation() {
             return (
               <View
                 style={{
-                  ...styles.dropdown1ItemStyle,
+                  ...styles.dropdownTimeItemStyle,
                   ...(isSelected && {backgroundColor: '#D2D9DF'}),
                 }}>
-                <Text style={styles.dropdown1ItemTxtStyle}>{item.title}</Text>
+                <Text style={styles.dropdownTimeItemTxtStyle}>{item.title}</Text>
               </View>
             );
           }}
-          dropdown1Style={styles.dropdown1MenuStyle}
+          showsVerticalScrollIndicator={false}
+          dropdownTimeStyle={styles.dropdownTimeMenuStyle}
         />
       </View>
 
       <View style={styles.instructions2Container}>
-        <Text style={styles.instructions2Text}>Canteen & spoken language preferences are optional.</Text>
+        <Text style={styles.instructions2Text}>Indicate your preferences!</Text>
       </View>
       
       <View style={styles.dropdown2Container}>
@@ -213,7 +205,7 @@ function RequestCreation() {
             return (
               <View style={styles.dropdown2ButtonStyle}>
                 <Text style={styles.dropdown2ButtonTxtStyle}>
-                  {(selectedItem && selectedItem.title) || 'Select your canteen'}
+                  {(selectedItem && selectedItem.title) || 'Select a canteen'}
                 </Text>
               </View>
             );
@@ -245,7 +237,7 @@ function RequestCreation() {
             return (
               <View style={styles.dropdown3ButtonStyle}>
                 <Text style={styles.dropdown3ButtonTxtStyle}>
-                  {(selectedItem && selectedItem.title) || 'Select your language preference'}
+                  {(selectedItem && selectedItem.title) || 'Select language preference'}
                 </Text>
               </View>
             );
@@ -273,6 +265,7 @@ function RequestCreation() {
   );
 }
 
+// Last Tab: Profile
 function Profile() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -281,6 +274,7 @@ function Profile() {
   );
 }
 
+// Third Tab: View Match
 function ViewMatch () {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -289,6 +283,7 @@ function ViewMatch () {
   );
 }
 
+// Fourth Tab: Chats
 function Chats() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -303,7 +298,7 @@ export default function HomeScreen() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarLabelStyle: { fontWeight: 'bold'},
+        tabBarLabelStyle: { fontWeight: 'bold' },
       }}>
       <Tab.Screen 
         name="Home" 
@@ -401,25 +396,31 @@ const styles = StyleSheet.create({
     marginTop: 70,
   },  
   instructionsText: {
-    fontSize: 16.5,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#151E26',
     marginTop: 70,
   },
   instructions2Text: {
-    fontSize: 15,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#151E26',
   },
-  dropdown1Container: {
+  dateContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingLeft: 12,
     paddingRight: 12,
-    marginBottom: 15,
   },
-  dropdown1ButtonStyle: {
+  dropdownTimeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
+  dropdownTimeButtonStyle: {
     flex: 1,
     height: 50,
     backgroundColor: '#E9ECEF',
@@ -428,18 +429,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
   },
-  dropdown1ButtonTxtStyle: {
+  dropdownTimeButtonTxtStyle: {
     fontSize: 18,
     fontWeight: '500',
     color: '#151E26',
     textAlign: 'center',
   },
-  dropdown1MenuStyle: {
+  dropdownTimeMenuStyle: {
     backgroundColor: '#E9ECEF',
     borderRadius: 8,
     height: 100,
   },
-  dropdown1ItemStyle: {
+  dropdownTimeItemStyle: {
     width: '100%',
     height: 50,
     flexDirection: 'row',
@@ -449,7 +450,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#B1BDC8',
   },
-  dropdown1ItemTxtStyle: {
+  dropdownTimeItemTxtStyle: {
     fontSize: 18,
     fontWeight: '500',
     color: '#151E26',
