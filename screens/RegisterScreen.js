@@ -12,10 +12,20 @@ const RegisterScreen = () => {
             return;
           }
 
+        if (!validateEmailDomain(email)) {
+            alert('Please use your NUS email(@u.nus.edu) to register.');
+            return;
+        }
+
         auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            console.log('User account created & signed in!');
+        .then((userCredential) => {
+            const user = userCredential.user;
+            user.sendEmailVerification()
+            .then(() => {
+                alert(`Email verification sent to ${user.email}. Please click on the link to verify your account.`)
+                console.log('Email verification sent to', user.email);
+            })
         })
         .catch(error => {
             if (error.code === 'auth/email-already-in-use') {
@@ -26,6 +36,11 @@ const RegisterScreen = () => {
                 console.error(error);
             }
         })
+    }
+
+    const validateEmailDomain = (email) => {
+        const domain = email.split('@')[1];
+        return domain === 'u.nus.edu';
     }
     
   return (
