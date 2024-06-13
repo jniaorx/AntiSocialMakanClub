@@ -152,6 +152,7 @@ function RequestCreation() {
             testID="dateTimePicker"
             value={date}
             mode="date"
+            minimumDate={new Date()}
             is24Hour={true}
             onChange={onChange}
           />
