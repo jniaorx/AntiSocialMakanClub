@@ -132,6 +132,12 @@ function RequestCreation() {
       alert('Request created successfully!');
     } catch (error) {
       console.error('Error adding request: ', error);
+
+      if (error.code === 'firestore/permission-denied') {
+        alert('Please verify your email and re-login to continue using this app.')
+      } else {
+        alert('An error occured. Please try again later');
+      }
     }
   };
   
