@@ -269,7 +269,9 @@ function RequestCreation() {
         />
       </View>
 
-      <Text style={styles.sameGenderText}>Would you prefer to dine with the same gender?</Text>
+      
+
+      <Text style={styles.sameGenderText}>Same gender pairing</Text>
 
       <View style={styles.switchContainer}>
         <Text style={styles.dropdown3ItemTxtStyle}>{ isOn ? "Yes" : "No" }</Text>
@@ -571,7 +573,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     marginBottom: 90,
-    width: '80%'
+    width: '80%',
   },
   createButtonText: {
     color: 'white',
@@ -581,13 +583,12 @@ const styles = StyleSheet.create({
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
   },
   switch : {
     marginLeft: 10,
   },
   sameGenderText : {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#151E26',
     marginBottom: -12.5,
