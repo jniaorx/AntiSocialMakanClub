@@ -9,7 +9,6 @@ import firestore from '@react-native-firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 
 // First tab: Home 
 function HomeTab() {
@@ -270,8 +269,10 @@ function RequestCreation() {
         />
       </View>
 
+      <Text style={styles.sameGenderText}>Would you prefer to dine with the same gender?</Text>
+
       <View style={styles.switchContainer}>
-        <Text style={styles.dropdown3ItemTxtStyle}>Same Gender</Text>
+        <Text style={styles.dropdown3ItemTxtStyle}>{ isOn ? "Yes" : "No" }</Text>
         <Switch
           trackColor={{false: '#767577', true: '#81b0ff'}}
           thumbColor={'#E9ECEF'}
@@ -584,5 +585,11 @@ const styles = StyleSheet.create({
   },
   switch : {
     marginLeft: 10,
+  },
+  sameGenderText : {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#151E26',
+    marginBottom: -12.5,
   },
 });
