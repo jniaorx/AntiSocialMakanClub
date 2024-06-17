@@ -2,13 +2,14 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Switch } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 
 // First tab: Home 
 function HomeTab() {
@@ -92,6 +93,10 @@ function RequestCreation() {
                 { title: 'Other'},  
   ]; 
   
+  // toggle switch
+  const [isOn, setIsOn] = useState(false);
+  const toggle = () => setIsOn(prevState => !prevState);
+
   // to create a request
   const handleCreateRequest = async () => {
     if (!date || !selectedSlot) {
@@ -265,7 +270,18 @@ function RequestCreation() {
         />
       </View>
 
-     <TouchableOpacity onPress={handleCreateRequest} style={styles.createButtonContainer}>
+      <View style={styles.switchContainer}>
+        <Text style={styles.dropdown3ItemTxtStyle}>Same Gender</Text>
+        <Switch
+          trackColor={{false: '#767577', true: '#81b0ff'}}
+          thumbColor={'#E9ECEF'}
+          onValueChange={toggle}
+          value={isOn}
+          style={styles.switch}
+        />
+      </View>
+
+      <TouchableOpacity onPress={handleCreateRequest} style={styles.createButtonContainer}>
         <Text style={styles.createButtonText}>Create</Text>
       </TouchableOpacity>
     </View>
@@ -512,7 +528,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 12,
     paddingRight: 12,
-    marginBottom: 10,
   },
   dropdown3ButtonStyle: {
     flex: 1,
@@ -554,12 +569,20 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 20,
     alignItems: 'center',
-    marginBottom: 100,
+    marginBottom: 90,
     width: '80%'
   },
   createButtonText: {
     color: 'white',
     fontWeight: '700',
     fontSize: 19,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  switch : {
+    marginLeft: 10,
   },
 });
