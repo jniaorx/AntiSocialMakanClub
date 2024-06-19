@@ -2,37 +2,31 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Switch } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Switch, Image } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign } from '@expo/vector-icons';
+import { Feather, AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import MyImage from '../assets/logo-no-background.png';
+import { Avatar, Title } from 'react-native-paper';
+import MyImage2 from '../assets/user-pic.png'
 
 // First tab: Home 
 function HomeTab() {
-  // Sign out button 
-  const handleSignOut = () => {
-    auth()
-      .signOut()
-      .then(() => console.log('User signed out!'))
-      .catch(error => console.error('Error signing out: ', error));
-  };
-
   return (
-    <View style={styles.container}>
+    <View style={styles.homeContainer}>
       <View style={styles.wlcContainer}>
-        <Text style={styles.wlcTxt}>Welcome Back to AntiSocialMakanClub</Text>
+        <Text style={styles.wlcTxt}>WELCOME BACK</Text>
       </View>
 
       <View style={styles.altContainer}>
-        <Text style={styles.altText}>or</Text>
+        <Text style={styles.altText}>to</Text>
       </View>
 
-      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-        <Text style={styles.buttonText}>Sign out</Text>
-      </TouchableOpacity>
+      <Image source={MyImage} style={styles.image}/>
     </View>
   );
 }
@@ -153,7 +147,7 @@ function RequestCreation() {
   };
   
   return (
-    <View style={styles.requestContainer}>
+    <View style={styles.tabContainer}>
       <View style={styles.instructionsContainer}>
         <Text style={styles.instructionsText}>Select a Date and Time to start matching!</Text>
       </View>
@@ -281,8 +275,8 @@ function RequestCreation() {
       <View style={styles.switchContainer}>
         <Text style={styles.dropdown3ItemTxtStyle}>{ isOn ? "Yes" : "No" }</Text>
         <Switch
-          trackColor={{false: '#767577', true: '#81b0ff'}}
-          thumbColor={'#E9ECEF'}
+          trackColor={{false: '#767577', true: '#D2DBC8'}}
+          thumbColor={'#D2DBC8'}
           onValueChange={toggle}
           value={isOn}
           style={styles.switch}
@@ -298,9 +292,104 @@ function RequestCreation() {
 
 // Last Tab: Profile
 function Profile() {
+  // Sign out button 
+  const handleSignOut = () => {
+    auth()
+      .signOut()
+      .then(() => console.log('User signed out!'))
+      .catch(error => console.error('Error signing out: ', error));
+  };
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Placeholder Text</Text>
+    <View style={{flex: 1, justifyContent: 'center'}}>
+      <View style={styles.userInfoContainer}>
+        <View style={{ flexDirection: 'row', marginTop: 30}}>
+          <Avatar.Image
+            source={MyImage2}
+            size={125}
+          />
+        </View>
+
+        < Title style={[styles.title, {
+          marginTop: 15,
+          marginBottom: 5,
+        }]}>Username</Title> 
+      </View>
+
+      <View style={styles.userInfoContainer}>
+        <View style={styles.userInfoRow}>
+          <AntDesign name="mail" color="#ff000" size={22}/>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>e1009285@u.nus.edu</Text>
+        </View>
+
+        <View style={styles.userInfoRow}>
+          <AntDesign name="book" color="#ff000" size={22}/>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Computer Science</Text>
+        </View>
+
+        <View style={styles.userInfoRow}>
+          <AntDesign name="calendar" color="#ff000" size={22}/>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Year 2</Text>
+        </View>
+
+        <View style={styles.userInfoRow}>
+          <AntDesign name="hearto" color="#ff000" size={22}/>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Interests</Text>
+        </View>
+      </View>
+
+      <View style={styles.userInfoContainer}>
+        <View style={styles.userInfoRow}>
+          <AntDesign name="earth" color="#ff000" size={22}/>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Previous Requests</Text>
+        </View>
+
+        <View style={styles.userInfoRow}>
+          <AntDesign name="setting" color="#ff000" size={22}/>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Settings</Text>
+        </View>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+          <Text style={styles.buttonText}>Sign out</Text>
+        </TouchableOpacity>
+      </View>
+
+    </View>
+  );
+}
+
+// To navigate from Profile tab to Edit Profile page
+const Stack = createNativeStackNavigator();
+
+const ProfileStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="User Profile"
+        component={Profile}
+        options={({ navigation }) => ({
+          headerRight: () => (
+            <Feather.Button
+              name="edit"
+              color="#ff000"
+              backgroundColor={'#fff'}
+              size={20}
+              onPress={() => navigation.navigate('Edit Profile')}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen name="Edit Profile" component={EditProfile} />
+    </Stack.Navigator>
+  )
+}
+
+// Edit Profile nestled in Profile Tab
+const EditProfile = () => {
+  return (
+    <View style={styles.tabContainer}>
     </View>
   );
 }
@@ -338,6 +427,7 @@ export default function HomeScreen() {
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="home" color="#ff000" size={20}/>
           ),
+          headerShown: false,
         }}
       />
       <Tab.Screen 
@@ -369,11 +459,12 @@ export default function HomeScreen() {
       />
       <Tab.Screen 
         name="Profile" 
-        component={Profile} 
+        component={ProfileStack} 
         options={{
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="user" color="#ff000" size={20}/>
           ),
+          headerShown: false,
         }}
       />
     </Tab.Navigator>
@@ -381,50 +472,59 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    //backgroundColor: '#BFF0EF',
+  image : {
+    width: 375,
+    height: 300,
+    resizeMode: 'contain',
   },
-  requestContainer: {
+  homeContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
+  },
+  tabContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#ADD8E6',
+  },
+  buttonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
-    backgroundColor: "#0702F9",
+    backgroundColor: "#4A5D5E",
     padding: 15,
     borderRadius: 20,
     alignItems: 'center',
-    marginBottom: 500,
+    marginBottom: 50,
+    width: '80%',
   },
   buttonText: {
     color: 'white',
     fontWeight: '700',
-    fontSize: 16,
+    fontSize: 19,
   },
   wlcContainer: {
-    position: 'absolute',
-    height: 60,
-    justifyContent: 'flex-end',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 50,
+    justifyContent: 'center',
   },
   wlcTxt: {
-    fontSize: 21.5,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#151E26',
   },
   altContainer: {
-    marginTop: 60,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    marginBottom: -5,
   },
   altText: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 70,
   },  
   instructionsText: {
     fontSize: 20,
@@ -454,7 +554,7 @@ const styles = StyleSheet.create({
   dropdownTimeButtonStyle: {
     flex: 1,
     height: 50,
-    backgroundColor: '#E9ECEF',
+    backgroundColor: '#D2DBC8',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
@@ -497,7 +597,7 @@ const styles = StyleSheet.create({
   dropdown2ButtonStyle: {
     flex: 1,
     height: 50,
-    backgroundColor: '#E9ECEF',
+    backgroundColor: '#D2DBC8',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
@@ -540,7 +640,7 @@ const styles = StyleSheet.create({
   dropdown3ButtonStyle: {
     flex: 1,
     height: 50,
-    backgroundColor: '#E9ECEF',
+    backgroundColor: '#D2DBC8',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
@@ -573,7 +673,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   createButtonContainer: {
-    backgroundColor: "#0702F9",
+    backgroundColor: "#4A5D5E",
     padding: 15,
     borderRadius: 20,
     alignItems: 'center',
@@ -597,5 +697,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#151E26',
     marginBottom: -12.5,
+  },
+  userInfoContainer: {
+    paddingHorizontal: 30,
+    marginBottom: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  userInfoRow: {
+    flexDirection: 'row',
+    marginBottom: 20,
   },
 });
