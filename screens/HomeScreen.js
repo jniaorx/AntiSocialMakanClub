@@ -301,7 +301,7 @@ function Profile() {
   };
 
   return (
-    <View style={{flex: 1, justifyContent: 'center'}}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.userInfoContainer}>
         <View style={{ flexDirection: 'row', marginTop: 30}}>
           <Avatar.Image
@@ -312,11 +312,16 @@ function Profile() {
 
         < Title style={[styles.title, {
           marginTop: 15,
-          marginBottom: 5,
+          marginBottom: 10,
         }]}>Username</Title> 
+
+        <View style={styles.userInfoRow}>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Bio</Text>
+        </View>
+        
       </View>
 
-      <View style={styles.userInfoContainer}>
+      <View style={styles.otherInfoContainer}>
         <View style={styles.userInfoRow}>
           <AntDesign name="mail" color="#ff000" size={22}/>
           <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>e1009285@u.nus.edu</Text>
@@ -331,23 +336,14 @@ function Profile() {
           <AntDesign name="calendar" color="#ff000" size={22}/>
           <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Year 2</Text>
         </View>
-
-        <View style={styles.userInfoRow}>
-          <AntDesign name="hearto" color="#ff000" size={22}/>
-          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Interests</Text>
-        </View>
       </View>
 
-      <View style={styles.userInfoContainer}>
-        <View style={styles.userInfoRow}>
-          <AntDesign name="earth" color="#ff000" size={22}/>
-          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Previous Requests</Text>
-        </View>
+      <View style={styles.otherButton}>
+        <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Previous Requests</Text>
+      </View>
 
-        <View style={styles.userInfoRow}>
-          <AntDesign name="setting" color="#ff000" size={22}/>
-          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Settings</Text>
-        </View>
+      <View style={styles.otherButton}>
+        <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Settings</Text>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -491,6 +487,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   button: {
     backgroundColor: "#4A5D5E",
@@ -700,7 +697,7 @@ const styles = StyleSheet.create({
   },
   userInfoContainer: {
     paddingHorizontal: 30,
-    marginBottom: 25,
+    marginBottom: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -710,6 +707,20 @@ const styles = StyleSheet.create({
   },
   userInfoRow: {
     flexDirection: 'row',
+    marginBottom: 20,
+  },
+  otherInfoContainer: {
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'left',
+  },
+  otherButton: {
+    backgroundColor: "#D2DBC8",
+    padding: 15,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%',
     marginBottom: 20,
   },
 });
