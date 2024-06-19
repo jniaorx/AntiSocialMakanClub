@@ -94,7 +94,13 @@ function RequestCreation() {
   
   // toggle switch
   const [isOn, setIsOn] = useState(false);
-  const toggle = () => setIsOn(prevState => !prevState);
+  const toggle = () => {
+    setIsOn(prevState => {
+      const newState = !prevState;
+      console.log("Same Gender: ", newState ? "Yes" : "No");
+      return newState;
+    });
+  };
 
   // to create a request
   const handleCreateRequest = async () => {
@@ -114,6 +120,7 @@ function RequestCreation() {
       slot: selectedSlot.title,
       canteen: selectedCanteen ? selectedCanteen.title : null,
       language: selectedLanguage ? selectedLanguage.title : null,
+      sameGender: isOn ? "Yes" : "No",
       userId: user.uid,
     };
   
@@ -268,8 +275,6 @@ function RequestCreation() {
           dropdown3Style={styles.dropdown3MenuStyle}
         />
       </View>
-
-      
 
       <Text style={styles.sameGenderText}>Same gender pairing</Text>
 
