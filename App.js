@@ -1,12 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useEffect, useState } from 'react';
+import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import { useEffect, useState } from 'react';
+import SetNameScreen from './screens/SetNameScreen';
+import SetGenderScreen from './screens/SetGenderScreen';
+import SetYosScreen from './screens/SetYosScreen';
+import SetFacultyScreen from './screens/SetFacultyScreen';
+import SetBioScreen from './screens/SetBioScreen';
+import SetPfpScreen from './screens/SetPfpScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -14,11 +22,25 @@ export default function App() {
   // set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+  const [profileCompleted, setProfileCompleted] = useState(false);
 
   // Handle user state changes
   function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) setInitializing(false);
+    if (user) {
+      firestore()
+        .collection('users')
+        .doc(user.uid)
+        .get()
+        .then((documentSnapshot) => {
+          if (documentSnapshot.exists) {
+            setProfileCompleted(documentSnapshot.data().profileCompleted);
+          } else {
+            setProfileCompleted(false);
+          }
+        })
+    }
   }
 
   useEffect(() => {
@@ -33,7 +55,7 @@ export default function App() {
     <StatusBar style="light" />
     <NavigationContainer>
       <Stack.Navigator>
-        {user ? (
+      {user ? (
           <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
         ) : (
           <>
@@ -41,6 +63,12 @@ export default function App() {
           <Stack.Screen name="Register" component={RegisterScreen} />
           </>
         )}
+        <Stack.Screen options = {{ headerShown: false }} name="SetNameScreen" component={SetNameScreen} />
+        <Stack.Screen options = {{ headerShown: false }} name="SetGenderScreen" component={SetGenderScreen} />
+        <Stack.Screen options = {{ headerShown: false }} name="SetYosScreen" component={SetYosScreen} />
+        <Stack.Screen options = {{ headerShown: false }} name="SetFacultyScreen" component={SetFacultyScreen} />
+        <Stack.Screen options = {{ headerShown: false }} name="SetBioScreen" component={SetBioScreen} />
+        <Stack.Screen options = {{ headerShown: false }} name="SetPfpScreen" component={SetPfpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
     </>

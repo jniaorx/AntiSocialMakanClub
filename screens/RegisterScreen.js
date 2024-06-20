@@ -1,89 +1,99 @@
+import { useNavigation } from '@react-navigation/native';
 import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
-const RegisterScreen = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+const RegisterScreen = ({ navigation }) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const handleRegister = () => {
-        if (!email || !password) {
-            alert('Please enter both email and password.');
-            return;
-          }
+    const handleRegister = async () => {
+        try {
+            if (!email || !password) {
+                alert('Please enter both email and password.');
+                return;
+            }
 
-        if (!validateEmailDomain(email)) {
-            alert('Please use your NUS email(@u.nus.edu) to register.');
-            return;
-        }
+            if (!validateEmailDomain(email)) {
+                alert('Please use your NUS email(@u.nus.edu) to register.');
+                return;
+            }
 
-        auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
+            const userCredential = await auth().createUserWithEmailAndPassword(email, password);
             const user = userCredential.user;
-            user.sendEmailVerification()
-            .then(() => {
-                alert(`Email verification sent to ${user.email}. Please click on the link to verify your account.`)
-                console.log('Email verification sent to', user.email);
-            })
-        })
-        .catch(error => {
+
+            await user.sendEmailVerification();
+            alert(`Email verification sent to ${user.email}. Please click on the link to verify your account.`);
+
+            // Add user to Firestore with profileCompleted set to false initially
+            await firestore().collection('users').doc(user.uid).set({
+                email: user.email,
+                profileCompleted: false,
+            });
+
+            // Navigate to profile setup screen after registration
+            navigation.replace('SetNameScreen', {
+                uid: user.uid,
+            });
+
+        } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 alert('That email address is already in use!');
             } else if (error.code === 'auth/invalid-email') {
                 alert('That email address is invalid!');
             } else {
                 console.error(error);
+                alert('An error occurred: Please try again later.');
             }
-        })
-    }
+        }
+    };
 
     const validateEmailDomain = (email) => {
         const domain = email.split('@')[1];
         return domain === 'u.nus.edu';
-    }
-    
-  return (
-    //avoid keyboard covering input field
-    <ImageBackground source={require('../assets/food-wallpaper.jpg')} style={styles.background}>
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behaviour="padding"
-    >
-        <Text style={styles.headerText}>Create an account</Text>
-        <Text style={styles.text}>Please fill in the details to create an account</Text>
-        <View style={styles.inputContainer}>
-            <TextInput 
-            placeholder="Email"
-            placeholderTextColor="#61706b"
-            value={email}
-            onChangeText={text => setEmail(text)}
-            style={styles.input}
-            />
-            <TextInput
-            placeholder="Password"
-            placeholderTextColor="#61706b"
-            value={password}
-            onChangeText={text => setPassword(text)}
-            style={styles.input}
-            secureTextEntry
-            />
-            </View>
+    };
 
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                onPress={handleRegister}
-                style={styles.button}
-                >
-                    <Text style={styles.buttonText}>Register</Text>
-                </TouchableOpacity>
-            </View>  
-    </KeyboardAvoidingView>
-    </ImageBackground>
-  )
-}
+    return (
+        <ImageBackground source={require('../assets/food-wallpaper.jpg')} style={styles.background}>
+            <KeyboardAvoidingView 
+                style={styles.container}
+                behavior="padding"
+            >
+                <Text style={styles.headerText}>Create an account</Text>
+                <Text style={styles.text}>Please fill in the details to create an account</Text>
+                <View style={styles.inputContainer}>
+                    <TextInput 
+                        placeholder="Email"
+                        placeholderTextColor="#61706b"
+                        value={email}
+                        onChangeText={text => setEmail(text)}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Password"
+                        placeholderTextColor="#61706b"
+                        value={password}
+                        onChangeText={text => setPassword(text)}
+                        style={styles.input}
+                        secureTextEntry
+                    />
+                </View>
 
-export default RegisterScreen
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        onPress={handleRegister}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Register</Text>
+                    </TouchableOpacity>
+                </View>  
+            </KeyboardAvoidingView>
+        </ImageBackground>
+    );
+};
+
+export default RegisterScreen;
 
 const styles = StyleSheet.create({
     background: {
