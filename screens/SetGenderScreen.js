@@ -5,7 +5,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 const SetGenderScreen = ({ navigation }) => {
     const route = useRoute();
-    const { name } = route.params;
+    const { name, username } = route.params;
     const [selectedGender, setSelectedGender] = useState(null);
 
 
@@ -14,7 +14,7 @@ const SetGenderScreen = ({ navigation }) => {
             alert('Gender required. Please select your gender before proceeding.')
             return;
         }
-        navigation.navigate('SetYosScreen', { name, selectedGender });
+        navigation.navigate('SetYosScreen', { name, username, selectedGender });
     };
 
     // dropdown for gender

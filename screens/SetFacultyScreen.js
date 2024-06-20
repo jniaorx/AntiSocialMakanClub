@@ -5,7 +5,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 const SetFacultyScreen = ({ navigation }) => {
     const route = useRoute();
-    const { name, selectedGender, selectedYos } = route.params;
+    const { name, username, selectedGender, selectedYos } = route.params;
     const [selectedFaculty, setSelectedFaculty] = useState(null);
 
     const handleNext = () => {
@@ -13,7 +13,7 @@ const SetFacultyScreen = ({ navigation }) => {
             alert('Faculty required. Please select your faculty before proceeding.')
             return
         }
-        navigation.navigate('SetBioScreen', { name, selectedGender, selectedYos, selectedFaculty });
+        navigation.navigate('SetBioScreen', { name, username, selectedGender, selectedYos, selectedFaculty });
     };
 
     // dropdown for faculty

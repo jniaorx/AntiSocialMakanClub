@@ -4,11 +4,11 @@ import { useRoute } from '@react-navigation/native'
 
 const SetBioScreen = ({ navigation }) => {
     const route = useRoute();
-    const { name, selectedGender, selectedYos, selectedFaculty } = route.params;
+    const { name, username, selectedGender, selectedYos, selectedFaculty } = route.params;
     const [bio, setBio] = useState('');
 
     const handleNext = () => {
-        navigation.navigate('SetPfpScreen', { name, selectedGender, selectedYos, selectedFaculty, bio });
+        navigation.navigate('SetPfpScreen', { name, username, selectedGender, selectedYos, selectedFaculty, bio });
     }
 
     return (

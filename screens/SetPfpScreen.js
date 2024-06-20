@@ -7,7 +7,7 @@ import { useRoute } from '@react-navigation/native';
 
 const SetPfpScreen = ({ navigation }) => {
     const route = useRoute();
-    const { name, selectedGender, selectedYos, selectedFaculty, bio } = route.params;
+    const { name, username, selectedGender, selectedYos, selectedFaculty, bio } = route.params;
     const [profilePicture, setProfilePicture] = useState(require('../assets/user-icon.png'));
 
     const handleSaveProfile = async () => {
@@ -15,11 +15,11 @@ const SetPfpScreen = ({ navigation }) => {
         
         const userData = {
             name,
-            gender: selectedGender,
-            yos: selectedYos,
-            faculty: selectedFaculty,
+            username,
+            gender: selectedGender.title,
+            yos: selectedYos.title,
+            faculty: selectedFaculty.title,
             profilePicture: profilePicture.uri || profilePicture,
-            profileCompleted: true,
         };
 
         if (bio) {
@@ -27,7 +27,7 @@ const SetPfpScreen = ({ navigation }) => {
         }
 
         try {
-            await firestore().collection('users').doc(user.uid).set(userData);
+            await firestore().collection('users').doc(user.email).set(userData);
             alert('Profile creation succesful!')
             navigation.replace('HomeScreen');
         } catch (error) {

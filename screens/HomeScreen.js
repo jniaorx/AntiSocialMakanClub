@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Switch, Image } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -116,14 +116,14 @@ function RequestCreation() {
       canteen: selectedCanteen ? selectedCanteen.title : null,
       language: selectedLanguage ? selectedLanguage.title : null,
       sameGender: isOn ? "Yes" : "No",
-      userId: user.uid,
+      userId: user.email,
     };
   
     // to make sure that no duplicated request is made by the same user
     try {
       const querySnapshot = await firestore()
         .collection('requests')
-        .where('userId', '==', user.uid)
+        .where('userId', '==', user.email)
         .where('date', '==', request.date)
         .where('slot', '==', request.slot)
         .get();
@@ -133,7 +133,7 @@ function RequestCreation() {
         return;
       }
   
-      await firestore().collection('requests').add(request);
+      await firestore().collection('requests').doc(user.uid).set(request);
       console.log('Request added!', request);
       alert('Request created successfully!');
     } catch (error) {
@@ -294,6 +294,9 @@ function RequestCreation() {
 // Last Tab: Profile
 function Profile() {
   // Sign out button 
+  const [userData, setUserData] = useState(null);
+  const user = auth().currentUser;
+
   const handleSignOut = () => {
     auth()
       .signOut()
@@ -303,7 +306,30 @@ function Profile() {
       .catch(error => console.error('Error signing out: ', error));
   };
 
-  const user = auth().currentUser;
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDoc = await firestore().collection('users').doc(user.email).get()
+        if (userDoc.exists) {
+          setUserData(userDoc.data())
+        } else {
+          console.log('No such document!')
+        }
+      } catch (error) {
+        console.error('Error fetching user data: ', error)
+      }
+    }
+
+    fetchUserData();
+  }, []);
+
+  if (!userData) {
+    return (
+      <View style={styles.contianer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -317,13 +343,16 @@ function Profile() {
 
         < Title style={[styles.title, {
           marginTop: 15,
+        }]}>{userData.name}</Title> 
+
+        < Title style={[styles.username, {
+          marginTop: -10,
           marginBottom: 10,
-        }]}>Username</Title> 
+        }]}>@{userData.username}</Title> 
 
         <View style={styles.userInfoRow}>
-          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Bio</Text>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>{userData.bio}</Text>
         </View>
-        
       </View>
 
       <View style={styles.otherInfoContainer}>
@@ -334,12 +363,12 @@ function Profile() {
 
         <View style={styles.userInfoRow}>
           <AntDesign name="book" color="#ff000" size={22}/>
-          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Computer Science</Text>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>{userData.faculty}</Text>
         </View>
 
         <View style={styles.userInfoRow}>
           <AntDesign name="calendar" color="#ff000" size={22}/>
-          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>Year 2</Text>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>{userData.yos}</Text>
         </View>
       </View>
 
@@ -709,6 +738,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  username: {
+    fontSize: 15,
   },
   userInfoRow: {
     flexDirection: 'row',
