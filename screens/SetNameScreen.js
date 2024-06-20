@@ -1,9 +1,6 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Button } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
-import * as ImagePicker from 'expo-image-picker'
-import firestore from '@react-native-firebase/firestore'
-import auth from '@react-native-firebase/auth'
-import { useNavigation } from '@react-navigation/native'
+import MyImage from '../assets/logo-no-background.png';
 
 const SetNameScreen = ({ navigation }) => {
     const [name, setName] = useState('');
@@ -18,6 +15,8 @@ const SetNameScreen = ({ navigation }) => {
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
+             <Text style={styles.wlctxt}>Welcome!</Text>
+            <Image source={MyImage} style={styles.image}/>
             <Text style={styles.headerText}>Let's start setting up your profile!</Text>
             <Text style={styles.label}>Name</Text>
             <View style={styles.inputContainer}>
@@ -48,11 +47,24 @@ const styles = StyleSheet.create({
         height: '100%',
         padding: 20,
     },
+    wlctxt: {
+        color: 'black',
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    image : {
+        width: 375,
+        height: 200,
+        resizeMode: 'contain',
+        marginBottom: 30,
+      },
     headerText: {
         color: 'black',
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20,
+        marginTop: -10,
     },
     label: {
         color: 'black',
@@ -75,12 +87,15 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     nextContainer: {
-        backgroundColor: 'blue',
+        backgroundColor: "#4A5D5E",
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 90,
         width: '80%',
         paddingHorizontal: 20,
         paddingVertical: 10,
         marginTop: 20,
-        borderRadius: 10,
         alignSelf: 'center',
     },
     next: {

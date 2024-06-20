@@ -1,9 +1,6 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Button } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import * as ImagePicker from 'expo-image-picker'
-import firestore from '@react-native-firebase/firestore'
-import auth from '@react-native-firebase/auth'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useRoute } from '@react-navigation/native'
 import SelectDropdown from 'react-native-select-dropdown';
 
 const SetFacultyScreen = ({ navigation }) => {
@@ -103,13 +100,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingLeft: 12,
-        paddingRight: 12,
+        width: '80%',
       },
       dropdownFacultyButtonStyle: {
         flex: 1,
         height: 50,
-        backgroundColor: '#E9ECEF',
+        backgroundColor: '#D2DBC8',
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
@@ -143,12 +139,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
       },
       nextContainer: {
-        backgroundColor: 'blue',
+        backgroundColor: "#4A5D5E",
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 90,
         width: '80%',
         paddingHorizontal: 20,
         paddingVertical: 10,
         marginTop: 20,
-        borderRadius: 10,
         alignSelf: 'center',
     },
     next: {

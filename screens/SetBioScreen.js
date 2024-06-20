@@ -1,9 +1,6 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Button } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import * as ImagePicker from 'expo-image-picker'
-import firestore from '@react-native-firebase/firestore'
-import auth from '@react-native-firebase/auth'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useRoute } from '@react-navigation/native'
 
 const SetBioScreen = ({ navigation }) => {
     const route = useRoute();
@@ -66,21 +63,25 @@ const styles = StyleSheet.create({
         backgroundColor: '#d2dbc8',
         width: '80%',
         paddingHorizontal: 20,
+        paddingVertical: 10,
         borderRadius: 10,
         alignSelf: 'center',
     },
     input: {
-        fontSize: 20,
+        fontSize: 18,
         color: 'black',
         textAlignVertical: 'top',
     },
     nextContainer: {
-        backgroundColor: 'blue',
+        backgroundColor: "#4A5D5E",
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 90,
         width: '80%',
         paddingHorizontal: 20,
         paddingVertical: 10,
         marginTop: 20,
-        borderRadius: 10,
         alignSelf: 'center',
     },
     next: {

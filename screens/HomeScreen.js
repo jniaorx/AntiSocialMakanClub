@@ -296,7 +296,9 @@ function Profile() {
   const handleSignOut = () => {
     auth()
       .signOut()
-      .then(() => console.log('User signed out!'))
+      .then(() => {
+        console.log('User signed out!');
+      })
       .catch(error => console.error('Error signing out: ', error));
   };
 

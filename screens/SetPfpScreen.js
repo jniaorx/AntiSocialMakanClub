@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 const SetPfpScreen = ({ navigation }) => {
     const route = useRoute();
@@ -28,6 +28,7 @@ const SetPfpScreen = ({ navigation }) => {
 
         try {
             await firestore().collection('users').doc(user.uid).set(userData);
+            alert('Profile creation succesful!')
             navigation.replace('HomeScreen');
         } catch (error) {
             console.error('Error saving profile:', error);
@@ -92,12 +93,15 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     nextContainer: {
-        backgroundColor: 'blue',
+        backgroundColor: "#4A5D5E",
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 90,
         width: '80%',
         paddingHorizontal: 20,
         paddingVertical: 10,
         marginTop: 20,
-        borderRadius: 10,
         alignSelf: 'center',
     },
     next: {

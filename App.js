@@ -56,19 +56,22 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
       {user ? (
-          <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
+        <>
+        <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="SetNameScreen" component={SetNameScreen} />
+        <Stack.Screen options={{ title:'' }} name="SetGenderScreen" component={SetGenderScreen} />
+        <Stack.Screen options={{ title:'' }} name="SetYosScreen" component={SetYosScreen} />
+        <Stack.Screen options={{ title:'' }} name="SetFacultyScreen" component={SetFacultyScreen} />
+        <Stack.Screen options={{ title:'' }} name="SetBioScreen" component={SetBioScreen} />
+        <Stack.Screen options={{ title:'' }} name="SetPfpScreen" component={SetPfpScreen} />
+        </>
         ) : (
           <>
           <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           </>
         )}
-        <Stack.Screen options = {{ headerShown: false }} name="SetNameScreen" component={SetNameScreen} />
-        <Stack.Screen options = {{ headerShown: false }} name="SetGenderScreen" component={SetGenderScreen} />
-        <Stack.Screen options = {{ headerShown: false }} name="SetYosScreen" component={SetYosScreen} />
-        <Stack.Screen options = {{ headerShown: false }} name="SetFacultyScreen" component={SetFacultyScreen} />
-        <Stack.Screen options = {{ headerShown: false }} name="SetBioScreen" component={SetBioScreen} />
-        <Stack.Screen options = {{ headerShown: false }} name="SetPfpScreen" component={SetPfpScreen} />
+        
       </Stack.Navigator>
     </NavigationContainer>
     </>
