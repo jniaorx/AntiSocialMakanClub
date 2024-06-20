@@ -9,6 +9,7 @@ import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import SetNameScreen from './screens/SetNameScreen';
+import SetUsernameScreen from './screens/SetUsernameScreen';
 import SetGenderScreen from './screens/SetGenderScreen';
 import SetYosScreen from './screens/SetYosScreen';
 import SetFacultyScreen from './screens/SetFacultyScreen';
@@ -60,6 +61,7 @@ export default function App() {
         <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
         <Stack.Screen options={{ headerShown: false }} name="SetNameScreen" component={SetNameScreen} />
         <Stack.Screen options={{ title:'' }} name="SetGenderScreen" component={SetGenderScreen} />
+        <Stack.Screen options={{ title:'' }} name="SetUsernameScreen" component={SetUsernameScreen} />
         <Stack.Screen options={{ title:'' }} name="SetYosScreen" component={SetYosScreen} />
         <Stack.Screen options={{ title:'' }} name="SetFacultyScreen" component={SetFacultyScreen} />
         <Stack.Screen options={{ title:'' }} name="SetBioScreen" component={SetBioScreen} />

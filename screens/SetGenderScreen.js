@@ -25,9 +25,7 @@ const SetGenderScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headerText}>Hello, {name}!</Text>
             <Text style={styles.label}>Please select your gender:</Text>
-
             <View style={styles.dropdownGenderContainer}>
             <SelectDropdown
                 data={gender}
@@ -76,12 +74,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         padding: 20,
-    },
-    headerText: {
-        color: 'black',
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
     },
     label: {
         color: 'black',
