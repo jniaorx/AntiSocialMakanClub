@@ -1,30 +1,30 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
-import MyImage from '../assets/logo-no-background.png';
+import { useRoute } from '@react-navigation/native'
 
-const SetNameScreen = ({ navigation }) => {
-    const [name, setName] = useState('');
+const SetUsernameScreen = ({ navigation }) => {
+    const route = useRoute();
+    const { name } = route.params;
+    const [username, setUsername] = useState('');
 
     const handleNext = () => {
-        if (name.trim() === '') {
-            alert('Name required. Please enter your name before proceeding.')
+        if (username.trim() === '') {
+            alert('Username required. Please enter your username before proceeding.')
             return;
         }
-        navigation.navigate('SetUsernameScreen', { name });
+        navigation.navigate('SetGenderScreen', { name, username });
     }
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
-             <Text style={styles.wlctxt}>Welcome!</Text>
-            <Image source={MyImage} style={styles.image}/>
-            <Text style={styles.headerText}>Let's start setting up your profile!</Text>
-            <Text style={styles.label}>Name</Text>
+            <Text style={styles.headerText}>Hello, {name}!</Text>
+            <Text style={styles.label}>Please enter your username:</Text>
             <View style={styles.inputContainer}>
                 <TextInput
-                    placeholder="Enter Name"
+                    placeholder="Enter Username"
                     placeholderTextColor="black"
-                    value={name}
-                    onChangeText={text => setName(text)}
+                    value={username}
+                    onChangeText={text => setUsername(text)}
                     style={styles.input}
                 />
             </View>
@@ -36,7 +36,7 @@ const SetNameScreen = ({ navigation }) => {
     );
 }
 
-export default SetNameScreen
+export default SetUsernameScreen
 
 const styles = StyleSheet.create({
     container: {
@@ -47,32 +47,17 @@ const styles = StyleSheet.create({
         height: '100%',
         padding: 20,
     },
-    wlctxt: {
-        color: 'black',
-        fontSize: 30,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    image : {
-        width: 375,
-        height: 200,
-        resizeMode: 'contain',
-        marginBottom: 30,
-      },
     headerText: {
         color: 'black',
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20,
-        marginTop: -10,
     },
     label: {
         color: 'black',
         fontSize: 17,
         fontWeight: 'bold',
-        alignSelf: 'flex-start',
         marginBottom: 5,
-        marginLeft: 40,
     },
     inputContainer: {
         backgroundColor: '#d2dbc8',

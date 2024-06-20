@@ -26,10 +26,8 @@ const RegisterScreen = ({ navigation }) => {
             await user.sendEmailVerification();
             alert(`Email verification sent to ${user.email}. Please click on the link to verify your account.`);
 
-            // Add user to Firestore with profileCompleted set to false initially
             await firestore().collection('users').doc(user.uid).set({
                 email: user.email,
-                profileCompleted: false,
             });
 
             // Navigate to profile setup screen after registration

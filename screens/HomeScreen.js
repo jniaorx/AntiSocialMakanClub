@@ -1,7 +1,7 @@
 /*
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Switch, Image } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
@@ -10,9 +10,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MyImage from '../assets/logo-no-background.png';
 import { Avatar, Title } from 'react-native-paper';
+import MyImage from '../assets/logo-no-background.png';
 import MyImage2 from '../assets/user-pic.png'
+import { connectStorageEmulator } from 'firebase/storage';
 
 // First tab: Home 
 function HomeTab() {
@@ -302,6 +303,8 @@ function Profile() {
       .catch(error => console.error('Error signing out: ', error));
   };
 
+  const user = auth().currentUser;
+
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.userInfoContainer}>
@@ -326,7 +329,7 @@ function Profile() {
       <View style={styles.otherInfoContainer}>
         <View style={styles.userInfoRow}>
           <AntDesign name="mail" color="#ff000" size={22}/>
-          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>e1009285@u.nus.edu</Text>
+          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>{user.email}</Text>
         </View>
 
         <View style={styles.userInfoRow}>
