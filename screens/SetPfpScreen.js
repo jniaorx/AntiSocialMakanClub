@@ -19,7 +19,7 @@ const SetPfpScreen = ({ navigation }) => {
             gender: selectedGender.title,
             yos: selectedYos.title,
             faculty: selectedFaculty.title,
-            profilePicture: profilePicture.uri || profilePicture,
+            profilePicture: profilePicture,
         };
 
         if (bio) {

@@ -5,15 +5,13 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Switch, Image } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
-import firestore, { firebase } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Avatar, Title } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
-import MyImage2 from '../assets/user-pic.png'
-import { connectStorageEmulator } from 'firebase/storage';
 
 // First tab: Home 
 function HomeTab() {
@@ -336,8 +334,8 @@ function Profile() {
       <View style={styles.userInfoContainer}>
         <View style={{ flexDirection: 'row', marginTop: 30}}>
           <Avatar.Image
-            source={MyImage2}
-            size={125}
+            source={userData.profilePicture}
+            size={123}
           />
         </View>
 
