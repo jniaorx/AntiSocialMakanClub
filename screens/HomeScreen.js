@@ -323,8 +323,16 @@ function Profile() {
 
   if (!userData) {
     return (
-      <View style={styles.contianer}>
-        <Text>Loading...</Text>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={styles.userInfoContainer}>
+          <Text>Loading...</Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+            <Text style={styles.buttonText}>Sign out</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
