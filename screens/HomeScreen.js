@@ -12,7 +12,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Avatar, Title } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
-// import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
+import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
 
 // First tab: Home 
 function HomeTab() {
@@ -137,10 +137,10 @@ function RequestCreation() {
   
       await firestore().collection('requests').add(request);
       console.log('Request added!', request);
-      alert('Request created successfully!');
+      alert('Request created successfully! We will now start matching you.');
 
       // run matching algorithm after successfully creating a request
-      // runMatchingAlgorithm();
+      runMatchingAlgorithm();
     } catch (error) {
       console.error('Error adding request: ', error);
 
@@ -151,6 +151,18 @@ function RequestCreation() {
       }
     }
   };
+
+  const runMatchingAlgorithm = async () => {
+    try {
+      const users = await getUsers();
+      const requests = await getRequests();
+      const matches = findMatches(requests, users);
+
+      console.log('Matches: ', matches);
+    } catch (error) {
+      console.log('Error running matching algorithm: ', error);
+    }
+  }
   
   return (
     <View style={styles.tabContainer}>
@@ -330,8 +342,16 @@ function Profile() {
 
   if (!userData) {
     return (
-      <View style={styles.contianer}>
-        <Text>Loading...</Text>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={styles.userInfoContainer}>
+          <Text>Loading...</Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+            <Text style={styles.buttonText}>Sign out</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
