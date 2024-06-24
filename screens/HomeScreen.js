@@ -12,7 +12,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Avatar, Title } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
-import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
+// import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
 
 // First tab: Home 
 function HomeTab() {
@@ -151,18 +151,6 @@ function RequestCreation() {
       }
     }
   };
-
-  const runMatchingAlgorithm = async () => {
-    try {
-      const users = await getUsers();
-      const requests = await getRequests();
-      const matches = findMatches(requests, users);
-
-      console.log('Matches: ', matches);
-    } catch (error) {
-      console.log('Error running matching algorithm: ', error);
-    }
-  }
   
   return (
     <View style={styles.tabContainer}>
