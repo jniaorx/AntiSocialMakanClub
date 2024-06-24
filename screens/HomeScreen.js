@@ -140,7 +140,7 @@ function RequestCreation() {
       alert('Request created successfully!');
 
       // run matching algorithm after successfully creating a request
-      runMatchingAlgorithm();
+      // runMatchingAlgorithm();
     } catch (error) {
       console.error('Error adding request: ', error);
 
