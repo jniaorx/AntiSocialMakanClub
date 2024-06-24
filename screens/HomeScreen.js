@@ -131,7 +131,7 @@ function RequestCreation() {
         return;
       }
   
-      await firestore().collection('requests').doc(user.uid).set(request);
+      await firestore().collection('requests').add(request);
       console.log('Request added!', request);
       alert('Request created successfully!');
     } catch (error) {
@@ -272,7 +272,7 @@ function RequestCreation() {
       <Text style={styles.sameGenderText}>Same gender pairing</Text>
 
       <View style={styles.switchContainer}>
-        <Text style={styles.dropdown3ItemTxtStyle}>{ isOn ? "Yes" : "No" }</Text>
+        <Text style={styles.dropdown3ItemTxtStyle}>{ isOn ? "Yes" : "No Preference" }</Text>
         <Switch
           trackColor={{false: '#767577', true: '#D2DBC8'}}
           thumbColor={'#D2DBC8'}
