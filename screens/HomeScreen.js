@@ -135,12 +135,14 @@ function RequestCreation() {
         return;
       }
   
-      await firestore().collection('requests').add(request);
+      const requestRef = await firestore().collection('requests').add(request);
+      request.id = requestRef.id
+
       console.log('Request added!', request);
       alert('Request created successfully! We will now start matching you.');
 
       // run matching algorithm after successfully creating a request
-      runMatchingAlgorithm();
+      runMatchingAlgorithm({ currentRequest: request });
     } catch (error) {
       console.error('Error adding request: ', error);
 
@@ -152,11 +154,17 @@ function RequestCreation() {
     }
   };
 
-  const runMatchingAlgorithm = async () => {
+  const runMatchingAlgorithm = async ({ currentRequest}) => {
     try {
       const users = await getUsers();
       const requests = await getRequests();
-      const matches = findMatches(requests, users);
+      const user = auth().currentUser
+      const matches = findMatches(requests, users, currentRequest);
+      
+      // filter matches to include only those involving the current user 
+      // const userMatches = matches.filter(
+      //   match => match.request1.userId === user.email || match.request2.userId === user.email
+      // )
 
       console.log('Matches: ', matches);
     } catch (error) {
