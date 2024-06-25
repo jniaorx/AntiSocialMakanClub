@@ -15,6 +15,8 @@ import SetYosScreen from './screens/SetYosScreen';
 import SetFacultyScreen from './screens/SetFacultyScreen';
 import SetBioScreen from './screens/SetBioScreen';
 import SetPfpScreen from './screens/SetPfpScreen';
+import MatchFoundScreen from './screens/MatchFoundScreen';
+import NoMatchScreen from './screens/NoMatchScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -66,6 +68,8 @@ export default function App() {
         <Stack.Screen options={{ title:'' }} name="SetFacultyScreen" component={SetFacultyScreen} />
         <Stack.Screen options={{ title:'' }} name="SetBioScreen" component={SetBioScreen} />
         <Stack.Screen options={{ title:'' }} name="SetPfpScreen" component={SetPfpScreen} />
+        <Stack.Screen options={{ title:'' }} name="MatchFoundScreen" component={MatchFoundScreen} />
+        <Stack.Screen options={{ title:'' }} name="NoMatchScreen" component={NoMatchScreen} />
         </>
         ) : (
           <>

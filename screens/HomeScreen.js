@@ -32,7 +32,7 @@ function HomeTab() {
 }
 
 // Second tab: Create Request
-function RequestCreation() {
+function RequestCreation({ navigation }) {
   const [selectedSlot, setSelectedTime] = useState(null);
   const [selectedCanteen, setSelectedCanteen] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
@@ -142,7 +142,7 @@ function RequestCreation() {
       alert('Request created successfully! We will now start matching you.');
 
       // run matching algorithm after successfully creating a request
-      runMatchingAlgorithm({ currentRequest: request });
+      runMatchingAlgorithm({ navigation, currentRequest: request });
     } catch (error) {
       console.error('Error adding request: ', error);
 
@@ -154,17 +154,18 @@ function RequestCreation() {
     }
   };
 
-  const runMatchingAlgorithm = async ({ currentRequest}) => {
+  const runMatchingAlgorithm = async ({ navigation, currentRequest}) => {
     try {
       const users = await getUsers();
       const requests = await getRequests();
       const user = auth().currentUser
       const matches = findMatches(requests, users, currentRequest);
-      
-      // filter matches to include only those involving the current user 
-      // const userMatches = matches.filter(
-      //   match => match.request1.userId === user.email || match.request2.userId === user.email
-      // )
+
+      if (matches.length > 0) {
+        navigation.navigate('MatchFoundScreen', { matchedUser: matches[0].otherUser })
+      } else {
+        navigation.navigate('NoMatchScreen')
+      }
 
       console.log('Matches: ', matches);
     } catch (error) {
