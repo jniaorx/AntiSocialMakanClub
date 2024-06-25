@@ -32,35 +32,34 @@ export const markRequestAsMatched = async (requestId) => {
 }
 
 // matching algorithm
-export const findMatches = (requests, users) => {
+export const findMatches = (requests, users, currentRequest) => {
     const matches = [];
-    for (let i = 0; i < requests.length; i++) {
-        for (let j = i + 1; j < requests.length; j++) {
-            const request1 = requests[i];
-            const request2 = requests[j];
 
-            if (request1.isMatched || request2.isMatched) {
+    const currentUser = users.find(user => user.id === currentRequest.userId)
+
+    for (let i = 0; i < requests.length; i++) {
+        const otherRequest = requests[i]
+
+            if (otherRequest.isMatched || otherRequest.userId === currentRequest.userId) {
                 continue;
             }
-
-            // get user data for request1 and request2
-            const user1 = users.find(user => user.id === request1.userId);
-            const user2 = users.find(user => user.id === request2.userId);
+            
+            const otherUser = users.find(user => user.id === otherRequest.userId)
 
             if (
-                request1.date === request2.date &&
-                request1.slot === request2.slot &&
-                (request1.canteen === request2.canteen || !request1.canteen || !request2.canteen || !request1.canteen && !request2.canteen || request1.canteen === 'Select a canteen' || request2.canteen === 'Select a canteen')&&
-                (request1.language === request2.language || !request1.language || !request2.language || !request1.language && !request2.language || request1.language === 'Select a language' || request2.language === 'Select a language') &&
-                ((request1.sameGender === 'Yes' && user1.gender === user2.gender) || request1.sameGender === 'No') &&
-                ((request2.sameGender === 'Yes' && user2.gender === user1.gender || request2.sameGender === 'No'))
+                currentRequest.date === otherRequest.date &&
+                currentRequest.slot === otherRequest.slot &&
+                (currentRequest.canteen === otherRequest.canteen || !currentRequest.canteen || !otherRequest.canteen || !currentRequest.canteen && !otherRequest.canteen || currentRequest.canteen === 'Select a canteen' || otherRequest.canteen === 'Select a canteen')&&
+                (currentRequest.language === otherRequest.language || !currentRequest.language || !otherRequest.language || !currentRequest.language && !otherRequest.language || currentRequest.language === 'Select a language' || otherRequest.language === 'Select a language') &&
+                ((currentRequest.sameGender === 'Yes' && currentUser.gender === otherUser.gender) || currentRequest.sameGender === 'No') &&
+                ((otherRequest.sameGender === 'Yes' && otherUser.gender === currentUser.gender || otherRequest.sameGender === 'No'))
             ) {
-                matches.push({ request1, request2 });
-                markRequestAsMatched(request1.id);
-                markRequestAsMatched(request2.id);
+                matches.push({ currentRequest, otherRequest })
+                markRequestAsMatched(currentRequest.id)
+                markRequestAsMatched(otherRequest.id)
+                break;
             }
         }
+        return matches;
     }
-
-    return matches;
-}
+  
