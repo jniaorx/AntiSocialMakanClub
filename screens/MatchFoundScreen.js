@@ -1,12 +1,13 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React from 'react'
 import { useRoute } from '@react-navigation/native'
+import matchedImage from '../assets/puzzle.png';
 
 const MatchFoundScreen = ({ navigation }) => {
     const route = useRoute();
     const { matchedUser } = route.params;
 
-    const handleViewProfile = () => {
+    const handleViewMatch = () => {
         navigation.navigate("Your Match")
     }
 
@@ -17,11 +18,12 @@ const MatchFoundScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>CONGRATULATIONS!</Text>
+            <Image source={matchedImage} style={styles.image} />
             <Text style={styles.text}>You have been matched with</Text>
             <Text style={styles.username}>@{matchedUser.username}</Text>
 
-            <TouchableOpacity onPress={handleViewProfile} style={styles.viewProfileContainer}>
-                <Text style={styles.viewProfile}>View Profile</Text>
+            <TouchableOpacity onPress={handleViewMatch} style={styles.viewMatchContainer}>
+                <Text style={styles.viewMatch}>View Match</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleChat} style={styles.chatContainer}>
                 <Text style={styles.chat}>Chat</Text>
@@ -37,35 +39,44 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        width: '100%',
-        height: '100%',
+        backgroundColor: '#f9f9f9',
+        paddingHorizontal: 20,
     },
     header: {
         fontSize: 35,
         fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 10,
     },
     text: {
         fontSize: 20,
+        color: '#666',
+        marginBottom: 5,
     },
     username: {
         fontSize: 30,
+        fontWeight: 'bold',
+        color: '#444',
+        marginBottom: 40,
     },
-    viewProfileContainer: {
+    image: {
+        width: 100,
+        height: 100,
+        resizeMode: 'contain',
+        marginBottom: 30,
+    },
+    viewMatchContainer: {
         backgroundColor: "#4A5D5E",
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
-        marginBottom: 90,
         width: '80%',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        marginTop: 20,
-        alignSelf: 'center',
+        marginBottom: 10,
     },
-    viewProfile: {
+    viewMatch: {
         color: 'white',
         fontSize: 20,
-        alignSelf: 'center',
+        fontWeight: 'bold',
     },
     chatContainer: {
         backgroundColor: "#4A5D5E",
@@ -73,14 +84,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         width: '80%',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        marginTop: -80,
-        alignSelf: 'center',
     },
     chat: {
         color: 'white',
         fontSize: 20,
-        alignSelf: 'center',
+        fontWeight: 'bold',
     },
 })
