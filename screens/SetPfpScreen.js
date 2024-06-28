@@ -1,14 +1,16 @@
 import { KeyboardAvoidingView, StyleSheet, Text, Button, TouchableOpacity, View, Image } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { useRoute } from '@react-navigation/native';
 
+const defaultProfilePicture = require('../assets/user-icon.png')
+
 const SetPfpScreen = ({ navigation }) => {
     const route = useRoute();
     const { name, username, selectedGender, selectedYos, selectedFaculty, bio } = route.params;
-    const [profilePicture, setProfilePicture] = useState(require('../assets/user-icon.png'));
+    const [profilePicture, setProfilePicture] = useState(null);
 
     const handleSaveProfile = async () => {
         const user = auth().currentUser;
@@ -19,7 +21,7 @@ const SetPfpScreen = ({ navigation }) => {
             gender: selectedGender.title,
             yos: selectedYos.title,
             faculty: selectedFaculty.title,
-            profilePicture: profilePicture,
+            profilePicture: profilePicture?.uri || null,
         };
 
         if (bio) {
@@ -27,7 +29,11 @@ const SetPfpScreen = ({ navigation }) => {
         }
 
         try {
-            await firestore().collection('users').doc(user.email).set(userData);
+            await firestore().collection('users').doc(user.uid).set(userData);
+            await user.updateProfile({
+                displayName: name,
+                photoURL: profilePicture?.uri || null,
+            })
             alert('Profile creation succesful!')
             navigation.replace('HomeScreen');
         } catch (error) {
@@ -51,9 +57,19 @@ const SetPfpScreen = ({ navigation }) => {
         });
 
         if (!result.canceled && result.assets.length > 0) {
+            console.log("Selected image URI:", result.assets[0].uri);
             setProfilePicture({ uri: result.assets[0].uri });
         }
     };
+
+    useEffect(() => {
+        const user = auth().currentUser;
+        if (user && user.photoURL) {
+            setProfilePicture({ uri: user.photoURL })
+        } else {
+            setProfilePicture(defaultProfilePicture)
+        }
+    }, [])
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">

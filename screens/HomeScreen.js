@@ -2,7 +2,7 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Switch, Image } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Switch, Image, FlatList, TextInput, Button } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -13,6 +13,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Avatar, Title } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
 import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
+import { createChat, sendMessage, listenMessages, markMessageAsRead } from '../utils/chatFunction';
+import Chats from './ChatListScreen';
 
 // First tab: Home 
 function HomeTab() {
@@ -117,7 +119,7 @@ function RequestCreation({ navigation }) {
       canteen: selectedCanteen ? selectedCanteen.title : null,
       language: selectedLanguage ? selectedLanguage.title : null,
       sameGender: isOn ? "Yes" : "No",
-      userId: user.email,
+      userId: user.uid,
       isMatched: false,
     };
   
@@ -125,7 +127,7 @@ function RequestCreation({ navigation }) {
     try {
       const querySnapshot = await firestore()
         .collection('requests')
-        .where('userId', '==', user.email)
+        .where('userId', '==', user.uid)
         .where('date', '==', request.date)
         .where('slot', '==', request.slot)
         .get();
@@ -162,7 +164,7 @@ function RequestCreation({ navigation }) {
       const matches = findMatches(requests, users, currentRequest);
 
       if (matches.length > 0) {
-        navigation.navigate('MatchFoundScreen', { matchedUser: matches[0].otherUser })
+        navigation.navigate('MatchFoundScreen', { matchedUser: matches[0].otherUser, currentUser: matches[0].currentUser })
       } else {
         navigation.navigate('NoMatchScreen')
       }
@@ -335,7 +337,7 @@ function Profile() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDoc = await firestore().collection('users').doc(user.email).get()
+        const userDoc = await firestore().collection('users').doc(user.uid).get()
         if (userDoc.exists) {
           setUserData(userDoc.data())
         } else {
@@ -365,6 +367,7 @@ function Profile() {
     );
   }
 
+  console.log(userData.profilePicture)
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.userInfoContainer}>
@@ -460,15 +463,6 @@ const EditProfile = () => {
 
 // Third Tab: View Match
 function ViewMatch () {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Placeholder Text</Text>
-    </View>
-  );
-}
-
-// Fourth Tab: Chats
-function Chats() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Placeholder Text</Text>

@@ -54,7 +54,7 @@ export const findMatches = (requests, users, currentRequest) => {
                 ((currentRequest.sameGender === 'Yes' && currentUser.gender === otherUser.gender) || currentRequest.sameGender === 'No') &&
                 ((otherRequest.sameGender === 'Yes' && otherUser.gender === currentUser.gender || otherRequest.sameGender === 'No'))
             ) {
-                matches.push({ currentRequest, otherUser, otherRequest })
+                matches.push({ currentUser, currentRequest, otherUser, otherRequest })
                 markRequestAsMatched(currentRequest.id)
                 markRequestAsMatched(otherRequest.id)
                 break;
