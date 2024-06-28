@@ -13,7 +13,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Avatar, Title } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
 import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
-import { createChat, sendMessage, listenMessages, markMessageAsRead } from '../utils/chatFunction';
 import Chats from './ChatListScreen';
 
 // First tab: Home 
@@ -324,6 +323,7 @@ function Profile() {
   // Sign out button 
   const [userData, setUserData] = useState(null);
   const user = auth().currentUser;
+  const defaultProfilePicture = require('../assets/user-icon.png')
 
   const handleSignOut = () => {
     auth()
@@ -367,15 +367,12 @@ function Profile() {
     );
   }
 
-  console.log(userData.profilePicture)
+  console.log(user)
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.userInfoContainer}>
         <View style={{ flexDirection: 'row', marginTop: 30}}>
-          <Avatar.Image
-            source={userData.profilePicture}
-            size={123}
-          />
+          <Image source={userData.profilePicture} style={styles.pfp} />
         </View>
 
         < Title style={[styles.title, {
@@ -788,4 +785,10 @@ const styles = StyleSheet.create({
     width: '80%',
     marginBottom: 20,
   },
+  pfp: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    alignSelf: 'center',
+  }
 });
