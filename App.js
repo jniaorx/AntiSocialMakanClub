@@ -17,6 +17,7 @@ import SetBioScreen from './screens/SetBioScreen';
 import SetPfpScreen from './screens/SetPfpScreen';
 import MatchFoundScreen from './screens/MatchFoundScreen';
 import NoMatchScreen from './screens/NoMatchScreen';
+import ChatScreen from './screens/ChatScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -70,6 +71,7 @@ export default function App() {
         <Stack.Screen options={{ title:'' }} name="SetPfpScreen" component={SetPfpScreen} />
         <Stack.Screen options={{ title:'' }} name="MatchFoundScreen" component={MatchFoundScreen} />
         <Stack.Screen options={{ title:'' }} name="NoMatchScreen" component={NoMatchScreen} />
+        <Stack.Screen options={{ title:'' }} name="Chat" component={ChatScreen} />
         </>
         ) : (
           <>
