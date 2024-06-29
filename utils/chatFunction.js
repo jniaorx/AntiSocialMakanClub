@@ -36,6 +36,8 @@ export const createChat = async (user1, user2) => {
         const chatRef = await firestore().collection('chats').add({
             members: [user1.id, user2.id],
             membersnames: [user1.name, user2.name],
+            usernames: [user1.username, user2.username],
+            profilePics: [user1.profilePicture, user2.profilePicture],
             createdAt: firestore.FieldValue.serverTimestamp(),
             recentMessage: {
                 messageText: '',

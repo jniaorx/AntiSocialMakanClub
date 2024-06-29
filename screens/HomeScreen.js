@@ -2,7 +2,7 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Switch, Image, FlatList, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -160,7 +160,6 @@ function RequestCreation({ navigation }) {
     try {
       const users = await getUsers();
       const requests = await getRequests();
-      const user = auth().currentUser
       const matches = findMatches(requests, users, currentRequest);
 
       if (matches.length > 0) {
@@ -355,7 +354,7 @@ function Profile() {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <View style={styles.userInfoContainer}>
-          <Text>Loading...</Text>
+          <ActivityIndicator size="large" color="#0000ff" />
         </View>
 
         <View style={styles.buttonContainer}>
