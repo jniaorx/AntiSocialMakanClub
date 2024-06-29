@@ -1,7 +1,7 @@
 // ChatScreen.js
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { Avatar, GiftedChat } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
@@ -28,6 +28,7 @@ const ChatScreen = ({ route }) => {
             user: {
               _id: firebaseData.user._id,
               name: firebaseData.user.name,
+              avatar: user.photoURL,
             }
           }
 
@@ -49,6 +50,7 @@ const ChatScreen = ({ route }) => {
     const text = messages[0].text;
 
     console.log('Sending message:', { chatId, user, text });
+    console.log(user.photoURL)
 
     await firestore()
       .collection('chats')
@@ -68,8 +70,8 @@ const ChatScreen = ({ route }) => {
         .doc(chatId)
         .update({
           recentMessage: {
-            MessageText: text,
-            senderId: user.id,
+            messageText: text,
+            senderId: user.uid,
             sentAt: firestore.FieldValue.serverTimestamp(),
           },
           read: false,

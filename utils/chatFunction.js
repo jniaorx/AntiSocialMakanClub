@@ -1,4 +1,5 @@
 import firestore, { firebase } from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 /*
 
@@ -30,12 +31,11 @@ export const createChat = async (userId1, userId2) => {
 */
 
 export const createChat = async (user1, user2) => {
+    const user = auth().currentUser;
     try {
         const chatRef = await firestore().collection('chats').add({
-            members: {
-                [user1.id]: true,
-                [user2.id]: true
-            },
+            members: [user1.id, user2.id],
+            membersnames: [user1.name, user2.name],
             createdAt: firestore.FieldValue.serverTimestamp(),
             recentMessage: {
                 messageText: '',
@@ -104,17 +104,16 @@ export const markMessageAsRead = async (chatId, messageId) => {
 }
 */
 
-export const fetchUserChats = async (userId) => {
-    const querySnapshot = await firestore()
+export const fetchUserChats = (userId, callback) => {
+        return firestore()
         .collection('chats')
-        .where(`members.${userId}`, '==', true)
-        .get();
-
-        const chats = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-
-        return chats;
-}
+        .where('members', 'array-contains', userId)
+        .onSnapshot(querySnapshot => {
+            const chats = [];
+            querySnapshot.forEach(doc => {
+                chats.push({ id: doc.id, ...doc.data() });
+            })
+            callback(chats)
+        })
+    }
 

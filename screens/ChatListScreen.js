@@ -11,19 +11,13 @@ const ChatListScreen = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const loadChats = async () => {
-            try {
-                const fetchedChats = await fetchUserChats(user.uid);
-                setChats(fetchedChats || []); 
-            } catch (error) {
-                console.error("Failed to fetch chats: ", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        const unsubscribe = fetchUserChats(user.uid, (fecthedChats) => {
+            setChats(fecthedChats)
+            setLoading(false)
+        })
 
-        loadChats();
-    }, [user.uid]);
+        return () => unsubscribe()
+    }, [user.uid])
 
     const handleChatPress = (chatId) => {
         navigation.navigate('Chat', { chatId });
@@ -38,14 +32,18 @@ const ChatListScreen = () => {
             <FlatList
                 data={chats}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
+                renderItem={({ item }) => {
+
+                    const participant = item.membersnames.find(member => member !== user.displayName)
+                    return (
                     <TouchableOpacity onPress={() => handleChatPress(item.id)}>
                         <View style={styles.chatItem}>
-                            <Text style={styles.chatTitle}>{item.chatName || 'Chat'}</Text>
+                            <Text style={styles.chatTitle}>{participant}</Text>
                             <Text style={styles.chatSubtitle}>{item.recentMessage ? item.recentMessage.messageText : ''}</Text>
                         </View>
                     </TouchableOpacity>
-                )}
+                    )
+                }}
             />
         </View>
     );

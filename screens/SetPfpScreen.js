@@ -5,24 +5,32 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { useRoute } from '@react-navigation/native';
 
-const defaultProfilePicture = require('../assets/user-icon.png')
+const defaultProfilePicture = require('../assets/user-icon.png');
 
 const SetPfpScreen = ({ navigation }) => {
     const route = useRoute();
     const { name, username, selectedGender, selectedYos, selectedFaculty, bio } = route.params;
     const [profilePicture, setProfilePicture] = useState(null);
 
+    useEffect(() => {
+        const defaultUri = Image.resolveAssetSource(defaultProfilePicture).uri;
+        setProfilePicture({ uri: defaultUri });
+        console.log("Initialized profilePicture with URI:", defaultUri);
+    }, []);
+
     const handleSaveProfile = async () => {
         const user = auth().currentUser;
-        
+
         const userData = {
             name,
             username,
             gender: selectedGender.title,
             yos: selectedYos.title,
             faculty: selectedFaculty.title,
-            profilePicture: profilePicture?.uri || null,
+            profilePicture: profilePicture,
         };
+
+        console.log("Saving profile with URI:", profilePicture);
 
         if (bio) {
             userData.bio = bio;
@@ -32,9 +40,15 @@ const SetPfpScreen = ({ navigation }) => {
             await firestore().collection('users').doc(user.uid).set(userData);
             await user.updateProfile({
                 displayName: name,
-                photoURL: profilePicture?.uri || null,
-            })
-            alert('Profile creation succesful!')
+                photoURL: profilePicture.uri,
+            });
+
+            // Reload the user profile to reflect the updated photoURL
+            await auth().currentUser.reload();
+            const updatedUser = auth().currentUser;
+            console.log("Updated user:", updatedUser);
+
+            alert('Profile creation successful!');
             navigation.replace('HomeScreen');
         } catch (error) {
             console.error('Error saving profile:', error);
@@ -57,19 +71,10 @@ const SetPfpScreen = ({ navigation }) => {
         });
 
         if (!result.canceled && result.assets.length > 0) {
-            console.log("Selected image URI:", result.assets[0].uri);
             setProfilePicture({ uri: result.assets[0].uri });
+            console.log("Selected image with URI:", result.assets[0].uri);
         }
     };
-
-    useEffect(() => {
-        const user = auth().currentUser;
-        if (user && user.photoURL) {
-            setProfilePicture({ uri: user.photoURL })
-        } else {
-            setProfilePicture(defaultProfilePicture)
-        }
-    }, [])
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
