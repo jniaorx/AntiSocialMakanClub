@@ -28,7 +28,9 @@ const MatchFoundScreen = ({ navigation }) => {
         chatId = chatQuery.docs[0].id;
       }
 
-      navigation.navigate('Chat', { chatId, user: currentUser });
+      console.log(matchedUser)
+      navigation.navigate('Chat', { chatId, matchedUserName: matchedUser.name });
+
     } catch (error) {
       console.error("failed to create or navigate to chat: ", error)
     }

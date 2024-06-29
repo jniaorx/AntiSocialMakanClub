@@ -1,15 +1,32 @@
-// ChatScreen.js
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
-import React, { useState, useEffect, useCallback } from 'react';
-import { Avatar, GiftedChat } from 'react-native-gifted-chat';
+import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
+import { GiftedChat } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {
+  renderBubble,
+  renderSystemMessage,
+  renderMessage,
+  renderMessageText,
+  renderCustomView
+} from '../utils/messageContainer';
+import {
+  renderInputToolbar,
+  renderActions,
+  renderComposer,
+  renderSend
+}from '../utils/inputToolbar';
 
-const ChatScreen = ({ route }) => {
-  const { chatId } = route.params;
+const ChatScreen = ({ navigation, route }) => {
+  const { chatId, matchedUserName } = route.params;
   const user = auth().currentUser;
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [chatName, setChatName] = useState('');
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerTitle: matchedUserName });
+  }, [navigation, matchedUserName])
 
   useEffect(() => {
     const messageListener = firestore()
@@ -30,6 +47,8 @@ const ChatScreen = ({ route }) => {
               name: firebaseData.user.name,
               avatar: user.photoURL,
             },
+            // sent: true,
+            // received: true,
           }
 
           return data;
@@ -40,7 +59,7 @@ const ChatScreen = ({ route }) => {
       });
 
     return () => messageListener();
-  }, [chatId]);
+  }, [chatId, user]);
 
   const handleSend = useCallback((messages = []) => {
     onSend(chatId, user, messages);
@@ -90,7 +109,18 @@ const ChatScreen = ({ route }) => {
       user={{
         _id: user.uid,
         name: user.displayName,
+        avatar: user.photoURL,
       }}
+      renderBubble={renderBubble}
+      renderMessageText={renderMessageText}
+      renderInputToolbar={renderInputToolbar}
+      renderActions={renderActions}
+      renderComposer={renderComposer}
+      renderSend={renderSend}
+      alwaysShowSend
+      isTyping
+      isLoadingEarlier
+      scrollToBottom
     />
   );
 };
