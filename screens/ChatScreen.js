@@ -1,5 +1,5 @@
 // ChatScreen.js
-import { StyleSheet, ActivityIndicator } from 'react-native';
+import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Avatar, GiftedChat } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
@@ -29,7 +29,7 @@ const ChatScreen = ({ route }) => {
               _id: firebaseData.user._id,
               name: firebaseData.user.name,
               avatar: user.photoURL,
-            }
+            },
           }
 
           return data;
@@ -48,9 +48,6 @@ const ChatScreen = ({ route }) => {
 
   const onSend = async (chatId, user, messages = []) => {
     const text = messages[0].text;
-
-    console.log('Sending message:', { chatId, user, text });
-    console.log(user.photoURL)
 
     await firestore()
       .collection('chats')
@@ -79,7 +76,11 @@ const ChatScreen = ({ route }) => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    )
   }
 
   return (
