@@ -1,5 +1,5 @@
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
-import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -24,11 +24,10 @@ const ChatScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [chatName, setChatName] = useState('');
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerTitle: matchedUserName });
-  }, [navigation, matchedUserName])
-
   useEffect(() => {
+    
+  navigation.setOptions({ headerTitle: matchedUserName });
+
     const messageListener = firestore()
       .collection('chats')
       .doc(chatId)
@@ -59,7 +58,7 @@ const ChatScreen = ({ navigation, route }) => {
       });
 
     return () => messageListener();
-  }, [chatId, user]);
+  }, [chatId, matchedUserName, navigation]);
 
   const handleSend = useCallback((messages = []) => {
     onSend(chatId, user, messages);
