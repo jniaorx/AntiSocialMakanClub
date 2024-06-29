@@ -323,6 +323,7 @@ function Profile() {
   // Sign out button 
   const [userData, setUserData] = useState(null);
   const user = auth().currentUser;
+  const defaultProfilePicture = require('../assets/user-icon.png')
 
   const handleSignOut = () => {
     auth()
@@ -365,16 +366,12 @@ function Profile() {
       </View>
     );
   }
-
-
+  
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.userInfoContainer}>
         <View style={{ flexDirection: 'row', marginTop: 30}}>
-          <Avatar.Image
-            source={userData.profilePicture}
-            size={123}
-          />
+          <Image source={userData.profilePicture} style={styles.pfp} />
         </View>
 
         < Title style={[styles.title, {
@@ -778,4 +775,10 @@ const styles = StyleSheet.create({
     width: '80%',
     marginBottom: 20,
   },
+  pfp: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    alignSelf: 'center',
+  }
 });
