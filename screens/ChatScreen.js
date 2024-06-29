@@ -18,15 +18,38 @@ import {
 }from '../utils/inputToolbar';
 
 const ChatScreen = ({ navigation, route }) => {
-  const { chatId, matchedUserName } = route.params;
+  const { chatId } = route.params;
   const user = auth().currentUser;
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [chatName, setChatName] = useState('');
+  const [memberName, setmemberName] = useState('');
 
   useEffect(() => {
-    
-  navigation.setOptions({ headerTitle: matchedUserName });
+    const fetchChatDetails = async () => {
+      try {
+        const chatDoc = await firestore().collection('chats').doc(chatId).get()
+        const chatData = chatDoc.data()
+
+        if (chatData) {
+          const memberId = chatData.members.find(memberId => memberId !== user.uid)
+          const memberDoc = await firestore().collection('users').doc(memberId).get()
+          const memberData = memberDoc.data()
+
+          console.log(memberData.name)
+
+          if (memberData) {
+            setmemberName(memberData.name);
+            navigation.setOptions({ title: memberData.name })
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching chat details: ', error)
+      } finally {
+        setLoading(false);
+      }
+    }
+
+      fetchChatDetails();
 
     const messageListener = firestore()
       .collection('chats')
@@ -58,7 +81,7 @@ const ChatScreen = ({ navigation, route }) => {
       });
 
     return () => messageListener();
-  }, [chatId, matchedUserName, navigation]);
+  }, [chatId, user.uid, navigation]);
 
   const handleSend = useCallback((messages = []) => {
     onSend(chatId, user, messages);

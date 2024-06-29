@@ -71,7 +71,9 @@ export default function App() {
         <Stack.Screen options={{ title:'' }} name="SetPfpScreen" component={SetPfpScreen} />
         <Stack.Screen options={{ title:'' }} name="MatchFoundScreen" component={MatchFoundScreen} />
         <Stack.Screen options={{ title:'' }} name="NoMatchScreen" component={NoMatchScreen} />
-        <Stack.Screen options={{ headerTitle: ''}} name="Chat" component={ChatScreen} />
+        <Stack.Screen options={({ route }) => ({
+          title: route.params.chatName,
+        })} name="Chat" component={ChatScreen} />
         </>
         ) : (
           <>

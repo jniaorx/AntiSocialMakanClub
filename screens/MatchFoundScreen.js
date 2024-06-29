@@ -29,7 +29,7 @@ const MatchFoundScreen = ({ navigation }) => {
       }
 
       console.log(matchedUser)
-      navigation.navigate('Chat', { chatId, matchedUser });
+      navigation.navigate('Chat', { chatId, matchedUserName: matchedUser.name });
 
     } catch (error) {
       console.error("failed to create or navigate to chat: ", error)
