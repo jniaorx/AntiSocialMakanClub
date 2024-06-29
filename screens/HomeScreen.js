@@ -13,8 +13,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Avatar, Title } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
 import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
-import { createChat, sendMessage, listenMessages, markMessageAsRead } from '../utils/chatFunction';
 import Chats from './ChatListScreen';
+import ViewMatch from './ViewMatchScreen';
 
 // First tab: Home 
 function HomeTab() {
@@ -366,7 +366,7 @@ function Profile() {
     );
   }
 
-  console.log(userData.profilePicture)
+
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.userInfoContainer}>
@@ -456,15 +456,6 @@ const ProfileStack = () => {
 const EditProfile = () => {
   return (
     <View style={styles.tabContainer}>
-    </View>
-  );
-}
-
-// Third Tab: View Match
-function ViewMatch () {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Placeholder Text</Text>
     </View>
   );
 }

@@ -10,7 +10,7 @@ const MatchFoundScreen = ({ navigation }) => {
   const { matchedUser, currentUser } = route.params;
 
   const handleViewMatch = () => {
-    navigation.navigate("Your Match");
+    navigation.navigate("Your Match", { matchedUser });
   };
 
   const handleChat = async () => {
@@ -29,7 +29,7 @@ const MatchFoundScreen = ({ navigation }) => {
       }
 
       console.log(matchedUser)
-      navigation.navigate('Chat', { chatId, matchedUserName: matchedUser.name });
+      navigation.navigate('Chat', { chatId, matchedUser });
 
     } catch (error) {
       console.error("failed to create or navigate to chat: ", error)
