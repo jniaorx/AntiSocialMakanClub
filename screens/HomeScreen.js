@@ -776,8 +776,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   pfp: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     borderRadius: 100,
     alignSelf: 'center',
   }
