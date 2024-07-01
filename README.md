@@ -16,3 +16,6 @@ AntiSocialMakanClub aims to promote a vibrant and inclusive campus culture, wher
 
 For complete README document as of Milestone 1, please refer to link below:
 [README full document](https://drive.google.com/file/d/1K8npInmoW6zPKej_b42-NhSgB4iRavFP/view?usp=sharing)
+
+For complete README document as of Milestone 2, please refer to link below:
+[MS2 README document](https://drive.google.com/file/d/1FQut0OG1FgnurOydGmkXVfzn1700e8L3/view?usp=sharing)
