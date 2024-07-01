@@ -4,28 +4,35 @@ import { useRoute } from '@react-navigation/native';
 import matchedImage from '../assets/puzzle.png';
 import { createChat } from '../utils/chatFunction';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 const MatchFoundScreen = ({ navigation }) => {
   const route = useRoute();
   const { matchedUser, currentUser } = route.params;
+  const user = auth().currentUser;
 
   const handleViewMatch = () => {
-    navigation.navigate("Your Match", { matchedUser });
+    navigation.navigate("Your Match", { matchedUser, currentUser });
   };
 
   const handleChat = async () => {
     try {
       const chatQuery = await firestore()
         .collection('chats')
-        .where(`members.${currentUser.id}`, '==', true)
-        .where(`members.${matchedUser.id}`, '==', true)
+        .where('members', 'array-contains', user.uid)
         .get();
 
       let chatId;
       if (chatQuery.empty) {
         chatId = await createChat(currentUser, matchedUser);
       } else {
-        chatId = chatQuery.docs[0].id;
+        const chatDoc = chatQuery.docs.find(doc => doc.data().members.includes(matchedUser.id))
+
+        if (chatDoc) {
+            chatId = chatDoc.id
+        } else {
+            chatId = await createChat(currentUser, matchedUser)
+        }
       }
 
       console.log(matchedUser)

@@ -1,8 +1,113 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import firestore from '@react-native-firebase/firestore';
+import { createChat } from '../utils/chatFunction';
+import auth from '@react-native-firebase/auth';
 
-const ViewMatchScreen = ({ route }) => {
-    const { matchedUser } = route.params;
+const ViewMatchScreen = ({ route, navigation }) => {
+    // const { currentUser } = route.params;
+    const user = auth().currentUser
+    const [requests, setRequests] = useState([])
+    const [matchedUser, setMatchedUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const getRequests = async () => {
+        const requestRef = firestore().collection('requests');
+        const snapshot = await requestRef.where('isExpired', '==', false).where('userId', '==', user.uid).get()
+        const requests = [];
+        snapshot.forEach(doc => {
+            requests.push({ id: doc.id, ...doc.data() })
+        })
+        return requests
+    }
+
+    const fetchUserDetails = async (userId) => {
+        try {
+            const userRef = firestore().collection('users').doc(userId);
+            const doc = await userRef.get()
+            if (doc.exists) {
+                return { id: doc.id, ...doc.data() }
+            } else {
+                console.log('No such document!');
+                return null;
+            }
+        } catch (error) {
+            console.log('Error fetching user details:', error)
+            return null;
+        } 
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true)
+
+                const requestsData = await getRequests();
+                console.log('Fetched requests:', requestsData); // Log fetched requests
+                const matchedRequests = requestsData.filter(request => request.isMatched && request.matchedUser != user.uid);
+                console.log('Matched requests:', matchedRequests); // Log matched requests
+                setRequests(matchedRequests);
+    
+                if (matchedRequests.length > 0) {
+                    const matchedUserId = matchedRequests[0].matchedUser
+                    const userDetails = await fetchUserDetails(matchedUserId)
+                    setMatchedUser(userDetails)
+                }
+
+                setLoading(false)
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+                setLoading(false)
+            }
+        };
+    
+        fetchData();
+    }, []);
+    
+    // chat button
+    const handleChat = async () => {
+        try {
+          const chatQuery = await firestore()
+            .collection('chats')
+            .where('members', 'array-contains', user.uid)
+            .get();
+    
+          let chatId;
+          if (chatQuery.empty) {
+            chatId = await createChat(user, matchedUser);
+          } else {
+            const chatDoc = chatQuery.docs.find(doc => doc.data().members.includes(matchedUser.id))
+
+            if (chatDoc) {
+                chatId = chatDoc.id
+            } else {
+                chatId = await createChat(user, matchedUser)
+            }
+          }
+    
+          console.log(matchedUser)
+          navigation.navigate('Chat', { chatId, matchedUserName: matchedUser.name });
+    
+        } catch (error) {
+          console.error("failed to create or navigate to chat: ", error)
+        }
+      };
+
+      if (loading) {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="#4A5D5E" />
+            </View>
+        ); 
+      }
+
+      if (!matchedUser) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.noMatchText}>Your matched partner will be shown here once you are matched.</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -20,6 +125,9 @@ const ViewMatchScreen = ({ route }) => {
                     <Text style={styles.info}>Faculty: {matchedUser.faculty}</Text>
                 </View>
             </View>
+            <TouchableOpacity onPress={handleChat} style={styles.chatContainer}>
+                <Text style={styles.chat}>Chat</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -31,7 +139,14 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f5f5f5',
         alignItems: 'center',
+        justifyContent: 'center',
         padding: 20,
+    },
+    noMatchText: {
+        fontSize: 18,
+        textAlign: 'center',
+        justifyContent: 'center',
+        color: '#666',
     },
     image: {
         width: 150,
@@ -92,5 +207,18 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 8,
         elevation: 5,
+    },
+    chatContainer: {
+        backgroundColor: "#4A5D5E",
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        width: '80%',
+        marginTop: 20,
+    },
+    chat: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
     },
 });
