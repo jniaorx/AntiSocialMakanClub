@@ -120,7 +120,9 @@ function RequestCreation({ navigation }) {
       language: selectedLanguage ? selectedLanguage.title : null,
       sameGender: isOn ? "Yes" : "No",
       userId: user.uid,
+      matchedUser: '',
       isMatched: false,
+      isExpired: false,
     };
   
     // to make sure that no duplicated request is made by the same user

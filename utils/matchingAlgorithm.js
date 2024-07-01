@@ -23,9 +23,9 @@ export const getRequests = async () => {
 }
 
 // to mark matched request
-export const markRequestAsMatched = async (requestId) => {
+export const markRequestAsMatched = async (requestId, matchedUserId) => {
     try {
-        await firestore().collection('requests').doc(requestId).update({ isMatched: true })
+        await firestore().collection('requests').doc(requestId).update({ isMatched: true, matchedUser: matchedUserId })
     } catch (error) {
         console.log('Error marking request as matched: ', error);
     }
@@ -55,8 +55,8 @@ export const findMatches = (requests, users, currentRequest) => {
                 ((otherRequest.sameGender === 'Yes' && otherUser.gender === currentUser.gender || otherRequest.sameGender === 'No'))
             ) {
                 matches.push({ currentUser, currentRequest, otherUser, otherRequest })
-                markRequestAsMatched(currentRequest.id)
-                markRequestAsMatched(otherRequest.id)
+                markRequestAsMatched(currentRequest.id, otherUser.id)
+                markRequestAsMatched(otherRequest.id, currentUser.id)
                 break;
             }
         }
