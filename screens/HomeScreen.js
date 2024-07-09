@@ -2,7 +2,7 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator, Button } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
