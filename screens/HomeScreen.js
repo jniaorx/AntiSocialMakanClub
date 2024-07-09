@@ -2,7 +2,7 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator, Button } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -10,7 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Avatar, Title } from 'react-native-paper';
+import { Title } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
 import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
 import Chats from './ChatListScreen';
@@ -321,7 +321,7 @@ function RequestCreation({ navigation }) {
 }
 
 // Last Tab: Profile
-function Profile() {
+function Profile({navigation}) {
   // Sign out button 
   const [userData, setUserData] = useState(null);
   const user = auth().currentUser;
@@ -407,12 +407,20 @@ function Profile() {
         </View>
       </View>
 
-      <View style={styles.otherButton}>
-        <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Previous Requests</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('Previous Requests')} 
+          style={styles.otherButton}>
+          <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Previous Requests</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.otherButton}>
-        <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Settings</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('Settings')} 
+          style={styles.otherButton}>
+          <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Settings</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -447,8 +455,24 @@ const ProfileStack = () => {
         })}
       />
       <Stack.Screen name="Edit Profile" component={EditProfile} />
+      <Stack.Screen name="Previous Requests" component={PreviousRequests}/>
+      <Stack.Screen name="Settings" component={Settings}/>
     </Stack.Navigator>
   )
+}
+
+const PreviousRequests = () => {
+  return (
+    <View style={styles.tabContainer}>
+    </View>
+  );
+}
+
+const Settings = () => {
+  return (
+    <View style={styles.tabContainer}>
+    </View>
+  );
 }
 
 // Edit Profile nestled in Profile Tab
