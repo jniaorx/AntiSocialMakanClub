@@ -1,18 +1,30 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import { useRoute } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore'
 
 const SetUsernameScreen = ({ navigation }) => {
     const route = useRoute();
     const { name } = route.params;
     const [username, setUsername] = useState('');
 
-    const handleNext = () => {
+    const checkUsername = async(username) => {
+        const userRef = firestore().collection('users')
+        const snapshot = await userRef.where('username', '==', username).get()
+        return !snapshot.empty
+    }
+
+    const handleNext = async () => {
         if (username.trim() === '') {
             alert('Username required. Please enter your username before proceeding.')
             return;
         }
-        navigation.navigate('SetGenderScreen', { name, username });
+        const usernameExists = await checkUsername(username)
+        if (usernameExists) {
+            alert('This username is taken. Please choose another one.')
+        } else {
+            navigation.navigate('SetGenderScreen', { name, username });
+        }
     }
 
     return (

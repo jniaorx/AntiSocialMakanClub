@@ -43,9 +43,9 @@ const ViewMatchScreen = ({ route, navigation }) => {
                 setLoading(true)
 
                 const requestsData = await getRequests();
-                console.log('Fetched requests:', requestsData); // Log fetched requests
+                // console.log('Fetched requests:', requestsData); // Log fetched requests
                 const matchedRequests = requestsData.filter(request => request.isMatched && request.matchedUser != user.uid);
-                console.log('Matched requests:', matchedRequests); // Log matched requests
+                // console.log('Matched requests:', matchedRequests); // Log matched requests
                 setRequests(matchedRequests);
     
                 if (matchedRequests.length > 0) {
