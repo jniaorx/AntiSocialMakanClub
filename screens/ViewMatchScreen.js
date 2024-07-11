@@ -8,6 +8,7 @@ const ViewMatchScreen = ({ route, navigation }) => {
     // const { currentUser } = route.params;
     const user = auth().currentUser
     const [requests, setRequests] = useState([])
+    const [currentUser, setCurrentUser] = useState(null);
     const [matchedUser, setMatchedUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -43,15 +44,15 @@ const ViewMatchScreen = ({ route, navigation }) => {
                 setLoading(true)
 
                 const requestsData = await getRequests();
-                // console.log('Fetched requests:', requestsData); // Log fetched requests
                 const matchedRequests = requestsData.filter(request => request.isMatched && request.matchedUser != user.uid);
-                // console.log('Matched requests:', matchedRequests); // Log matched requests
                 setRequests(matchedRequests);
     
                 if (matchedRequests.length > 0) {
                     const matchedUserId = matchedRequests[0].matchedUser
-                    const userDetails = await fetchUserDetails(matchedUserId)
-                    setMatchedUser(userDetails)
+                    const matchedUserDetails = await fetchUserDetails(matchedUserId)
+                    const currentUserDetails = await fetchUserDetails(user.uid)
+                    setMatchedUser(matchedUserDetails)
+                    setCurrentUser(currentUserDetails)
                 }
 
                 setLoading(false)
@@ -74,14 +75,14 @@ const ViewMatchScreen = ({ route, navigation }) => {
     
           let chatId;
           if (chatQuery.empty) {
-            chatId = await createChat(user, matchedUser);
+            chatId = await createChat(currentUser, matchedUser);
           } else {
             const chatDoc = chatQuery.docs.find(doc => doc.data().members.includes(matchedUser.id))
 
             if (chatDoc) {
                 chatId = chatDoc.id
             } else {
-                chatId = await createChat(user, matchedUser)
+                chatId = await createChat(currentUser, matchedUser)
             }
           }
     

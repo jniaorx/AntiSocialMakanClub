@@ -33,6 +33,7 @@ export const createChat = async (userId1, userId2) => {
 export const createChat = async (user1, user2) => {
     const user = auth().currentUser;
     try {
+        // console.log(user1)
         const chatRef = await firestore().collection('chats').add({
             members: [user1.id, user2.id],
             membersnames: [user1.name, user2.name],
@@ -49,7 +50,7 @@ export const createChat = async (user1, user2) => {
         return chatRef.id;
     } catch (error) {
         console.error("Error creating chat: ", error);
-        throw error; // Optionally throw the error to handle it where this function is called
+        throw error; 
     }
 };
 
