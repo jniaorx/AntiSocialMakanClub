@@ -456,11 +456,12 @@ const ProfileStack = () => {
       />
       <Stack.Screen name="Edit Profile" component={EditProfile} />
       <Stack.Screen name="Previous Requests" component={PreviousRequests}/>
-      <Stack.Screen name="Settings" component={Settings}/>
+      <Stack.Screen name="Settings" component={SettingsStack} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }
 
+// PreviousRequests nested in Profile
 const PreviousRequests = () => {
   return (
     <View style={styles.tabContainer}>
@@ -468,7 +469,135 @@ const PreviousRequests = () => {
   );
 }
 
-const Settings = () => {
+// To lead to other pages in Settings
+const SettingsStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Change Password" component={ChangePassword} />
+      <Stack.Screen name="About" component={AboutUs}/>
+      <Stack.Screen name="Report Abuse" component={ReportAbuse}/>
+      <Stack.Screen name="FAQ" component={FAQ}/>
+    </Stack.Navigator>
+  )
+}
+
+// Settings nested in Profile
+const Settings = ({navigation}) => {
+  // toggle switch for notifications
+  const [isOn, setIsOn] = useState(false);
+  const toggle = () => {
+    setIsOn(prevState => {
+      const newState = !prevState;
+      console.log("Notifications: ", newState ? "ON" : "OFF");
+      return newState;
+    });
+  };
+
+  // toggle switch for email
+  const [isEmailShown, setIsEmailShown] = useState(false);
+  const toggleEmail = () => {
+    setIsEmailShown(prevState => {
+      const newState = !prevState;
+      console.log("Email: ", newState ? "Shown" : "Not Shown");
+      return newState;
+    });
+  };
+
+  return (
+    <View style={styles.tabContainer}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Account Settings</Text>
+      </View>
+
+      <View style={styles.optionContainer}>
+        <Text style={styles.optionText}>Change password</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Change Password')}>
+          <AntDesign name="rightcircle" color="#767577" size={20}/>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.optionContainer}>
+        <Text style={styles.optionText}>Notifications</Text>
+        <Switch
+          trackColor={{false: '#767577', true: '#D2DBC8'}}
+          thumbColor={'#D2DBC8'}
+          onValueChange={toggle}
+          value={isOn}
+          style={styles.switch}
+        />
+      </View>
+
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Privacy Settings</Text>
+      </View>
+
+      <View style={styles.optionContainer}>
+        <Text style={styles.optionText}>Show Email</Text>
+        <Switch
+          trackColor={{false: '#767577', true: '#D2DBC8'}}
+          thumbColor={'#D2DBC8'}
+          onValueChange={toggleEmail}
+          value={isEmailShown}
+          style={styles.switch}
+        />
+      </View>
+
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>More</Text>
+      </View>
+
+      <View style={styles.optionContainer}>
+        <Text style={styles.optionText}>About us</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("About")}>
+          <AntDesign name="rightcircle" color="#767577" size={20}/>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.optionContainer}>
+        <Text style={styles.optionText}>Report Abuse</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Report Abuse")}>
+          <AntDesign name="rightcircle" color="#767577" size={20}/>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.optionLastContainer}>
+        <Text style={styles.optionText}>Frequently Asked Questions</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("FAQ")}>
+          <AntDesign name="rightcircle" color="#767577" size={20}/>
+        </TouchableOpacity>
+      </View>
+
+    </View>
+  );
+}
+
+// Change password page
+const ChangePassword = () => {
+  return (
+    <View style={styles.tabContainer}>
+    </View>
+  );
+}
+
+// About page
+const AboutUs = () => {
+  return (
+    <View style={styles.tabContainer}>
+    </View>
+  );
+}
+
+// Report Abuse page
+const ReportAbuse = () => {
+  return (
+    <View style={styles.tabContainer}>
+    </View>
+  );
+}
+
+// FAQ page
+const FAQ = () => {
   return (
     <View style={styles.tabContainer}>
     </View>
@@ -807,4 +936,39 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignSelf: 'center',
   },
+  headerContainer: {
+    width: '100%',
+    marginLeft: 82,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  headerText: {
+    fontSize: 19,
+    fontWeight: 'bold',
+    marginTop: 15,
+  },
+  optionContainer: {
+    width: '90%',
+    marginBottom: 20,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems:'center',
+    justifyContent:'space-between',
+  }, 
+  optionText: {
+    fontSize: 19,
+    fontWeight:'500',
+  },
+  optionLastContainer: {
+    width: '90%',
+    marginBottom: 60,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems:'center',
+    justifyContent:'space-between',
+  }, 
 });
