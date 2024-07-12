@@ -417,7 +417,7 @@ function Profile({navigation}) {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
-          onPress={() => navigation.navigate('Settings')} 
+          onPress={() => navigation.navigate('Setting')} 
           style={styles.otherButton}>
           <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Settings</Text>
         </TouchableOpacity>
@@ -456,7 +456,7 @@ const ProfileStack = () => {
       />
       <Stack.Screen name="Edit Profile" component={EditProfile} />
       <Stack.Screen name="Previous Requests" component={PreviousRequests}/>
-      <Stack.Screen name="Settings" component={SettingsStack} options={{headerShown: false}} />
+      <Stack.Screen name="Setting" component={SettingsStack} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }
