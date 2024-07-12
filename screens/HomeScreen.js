@@ -475,9 +475,9 @@ const SettingsStack = () => {
     <Stack.Navigator>
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="Change Password" component={ChangePassword} />
-      <Stack.Screen name="About" component={AboutUs}/>
+      <Stack.Screen name="About Us" component={AboutUs}/>
       <Stack.Screen name="Report Abuse" component={ReportAbuse}/>
-      <Stack.Screen name="FAQ" component={FAQ}/>
+      <Stack.Screen name="Frequently Asked Questions" component={FAQ}/>
     </Stack.Navigator>
   )
 }
@@ -549,7 +549,7 @@ const Settings = ({navigation}) => {
 
       <View style={styles.optionContainer}>
         <Text style={styles.optionText}>About us</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("About")}>
+        <TouchableOpacity onPress={() => navigation.navigate("About Us")}>
           <AntDesign name="rightcircle" color="#767577" size={20}/>
         </TouchableOpacity>
       </View>
@@ -563,7 +563,7 @@ const Settings = ({navigation}) => {
 
       <View style={styles.optionLastContainer}>
         <Text style={styles.optionText}>Frequently Asked Questions</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("FAQ")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Frequently Asked Questions")}>
           <AntDesign name="rightcircle" color="#767577" size={20}/>
         </TouchableOpacity>
       </View>
@@ -583,7 +583,30 @@ const ChangePassword = () => {
 // About page
 const AboutUs = () => {
   return (
-    <View style={styles.tabContainer}>
+    <View style={styles.homeContainer}>
+      <Image source={MyImage} style={styles.image}/>
+
+      <View style={styles.aboutContainer}>
+        <Text style={styles.aboutText}>
+        Welcome to AntiSocialMakanClub!
+        </Text>
+
+        <Text style={styles.aboutText}>
+        We are two NUS undergraduates dedicated to fostering 
+        strong social connections among NUS students. 
+        </Text>
+
+        <Text style={styles.aboutText}>
+        Our app helps you find a meal buddy and enjoy a meal together 
+        at NUS canteens.
+        </Text>
+
+        <Text style={styles.aboutText}>
+        Join us to transform your meal times into 
+        opportunities for making new friends 
+        and building a supportive community!
+        </Text>
+      </View>     
     </View>
   );
 }
@@ -970,5 +993,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems:'center',
     justifyContent:'space-between',
+  },
+  aboutContainer: {
+    width:'90%',
+    marginTop: 10,
+    alignItems: 'center',
+    padding: 10,
+    marginBottom: 100,
+  },
+  aboutText: {
+    fontSize: 19,
+    textAlign: 'center',
+    marginBottom: 10,
   }, 
 });
