@@ -14,7 +14,7 @@ const ViewMatchScreen = ({ route, navigation }) => {
 
     const getRequests = async () => {
         const requestRef = firestore().collection('requests');
-        const snapshot = await requestRef.where('isExpired', '==', false).where('userId', '==', user.uid).get()
+        const snapshot = await requestRef.where('userId', '==', user.uid).get()
         const requests = [];
         snapshot.forEach(doc => {
             requests.push({ id: doc.id, ...doc.data() })
@@ -86,7 +86,7 @@ const ViewMatchScreen = ({ route, navigation }) => {
             }
           }
     
-          console.log(matchedUser)
+          // console.log(matchedUser)
           navigation.navigate('Chat', { chatId, matchedUserName: matchedUser.name });
     
         } catch (error) {

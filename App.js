@@ -18,6 +18,8 @@ import SetPfpScreen from './screens/SetPfpScreen';
 import MatchFoundScreen from './screens/MatchFoundScreen';
 import NoMatchScreen from './screens/NoMatchScreen';
 import ChatScreen from './screens/ChatScreen';
+import ViewMatchScreen from './screens/ViewMatchScreen';
+import MatchListScreen from './screens/MatchListScreen';
 
 
 const Stack = createNativeStackNavigator();

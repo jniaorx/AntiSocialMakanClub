@@ -25,7 +25,11 @@ export const getRequests = async () => {
 // to mark matched request
 export const markRequestAsMatched = async (requestId, matchedUserId) => {
     try {
-        await firestore().collection('requests').doc(requestId).update({ isMatched: true, matchedUser: matchedUserId })
+        await firestore().collection('requests').doc(requestId).update({ 
+            isMatched: true, 
+            matchedUser: matchedUserId, 
+            timeMatched: firestore.FieldValue.serverTimestamp(), 
+        })
     } catch (error) {
         console.log('Error marking request as matched: ', error);
     }
