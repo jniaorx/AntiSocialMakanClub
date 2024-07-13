@@ -14,7 +14,7 @@ import { Title } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
 import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
 import Chats from './ChatListScreen';
-import ViewMatch from './ViewMatchScreen';
+import ViewMatch from './MatchListScreen';
 
 // First tab: Home 
 function HomeTab() {
@@ -122,7 +122,8 @@ function RequestCreation({ navigation }) {
       userId: user.uid,
       matchedUser: '',
       isMatched: false,
-      isExpired: false,
+      // isExpired: false
+      timeMatched: null,
     };
   
     // to make sure that no duplicated request is made by the same user
@@ -640,7 +641,7 @@ export default function HomeScreen() {
         }}
       />
       <Tab.Screen 
-        name="Your Match" 
+        name="Matches" 
         component={ViewMatch} 
         options={{
           tabBarIcon: ({ color, size }) => (
