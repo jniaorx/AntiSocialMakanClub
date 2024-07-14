@@ -19,8 +19,6 @@ import MatchFoundScreen from './screens/MatchFoundScreen';
 import NoMatchScreen from './screens/NoMatchScreen';
 import ChatScreen from './screens/ChatScreen';
 import ViewMatchScreen from './screens/ViewMatchScreen';
-import MatchListScreen from './screens/MatchListScreen';
-
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +74,7 @@ export default function App() {
         <Stack.Screen options={({ route }) => ({
           title: route.params.chatName,
         })} name="Chat" component={ChatScreen} />
+        <Stack.Screen options={{ title:'' }} name="ViewMatchScreen" component={ViewMatchScreen} />
         </>
         ) : (
           <>

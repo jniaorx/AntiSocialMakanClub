@@ -24,6 +24,10 @@ const MatchListScreen = () => {
         return () => unsubscribe();
     }, [user.uid])
 
+    const handleMatchPress = (matchedUserId) => {
+        navigation.navigate('ViewMatchScreen', { matchedUserId })
+    }
+
     if (loading) {
         return (
             <View style={StyleSheet.loadingContainer}>
@@ -41,7 +45,7 @@ const MatchListScreen = () => {
                     const requestDate = item.date
                     const requestSlot = item.slot
                     return (
-                        <TouchableOpacity onPress={() => handleMatchPress(item.id)} style={styles.matchItem}>
+                        <TouchableOpacity onPress={() => handleMatchPress(item.matchedUser)} style={styles.matchItem}>
                             <View style={styles.matchContent}>
                                 <Text style={styles.matchDate}>{requestDate}</Text>
                                 <Text style={styles.matchSlot}>{requestSlot}</Text>

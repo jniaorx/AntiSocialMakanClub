@@ -12,7 +12,7 @@ const MatchFoundScreen = ({ navigation }) => {
   const user = auth().currentUser;
 
   const handleViewMatch = () => {
-    navigation.navigate("Your Match", { matchedUser, currentUser });
+    navigation.navigate("Matches", { matchedUser, currentUser });
   };
 
   const handleChat = async () => {
