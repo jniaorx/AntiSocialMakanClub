@@ -5,13 +5,14 @@ import { createChat } from '../utils/chatFunction';
 import auth from '@react-native-firebase/auth';
 
 const ViewMatchScreen = ({ route, navigation }) => {
-    // const { currentUser } = route.params;
+    const { matchedUserId } = route.params;
     const user = auth().currentUser
-    const [requests, setRequests] = useState([])
+    // const [requests, setRequests] = useState([])
     const [currentUser, setCurrentUser] = useState(null);
     const [matchedUser, setMatchedUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    /*
     const getRequests = async () => {
         const requestRef = firestore().collection('requests');
         const snapshot = await requestRef.where('userId', '==', user.uid).get()
@@ -21,6 +22,7 @@ const ViewMatchScreen = ({ route, navigation }) => {
         })
         return requests
     }
+    */
 
     const fetchUserDetails = async (userId) => {
         try {
@@ -38,6 +40,18 @@ const ViewMatchScreen = ({ route, navigation }) => {
         } 
     }
 
+    const getUserDetails = async () => {
+        setLoading(true);
+        const matchedUserDetails = await fetchUserDetails(matchedUserId);
+        setMatchedUser(matchedUserDetails);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        getUserDetails();
+    }, [matchedUserId]);
+
+    /*
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -64,7 +78,8 @@ const ViewMatchScreen = ({ route, navigation }) => {
     
         fetchData();
     }, []);
-    
+    */
+
     // chat button
     const handleChat = async () => {
         try {
