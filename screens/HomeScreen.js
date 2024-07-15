@@ -2,7 +2,7 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -458,7 +458,7 @@ const ProfileStack = () => {
       />
       <Stack.Screen name="Edit Profile" component={EditProfile} />
       <Stack.Screen name="Pending Requests" component={PendingRequests}/>
-      <Stack.Screen name="Settings" component={SettingsStack} options={{headerShown: false}} />
+      <Stack.Screen name="Setting" component={SettingsStack} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }
@@ -633,8 +633,125 @@ const FAQ = () => {
 
 // Edit Profile nestled in Profile Tab
 const EditProfile = () => {
+  const [bioText, onChangeBioText] = useState('');
+  const [userName, onChangeUserName] = useState(''); 
+
+  // dropdown for Yos
+  const [selectedYos, setSelectedYos] = useState(null);
+  const Yos = [{ title: 'Year 1' },
+    { title: 'Year 2' },
+    { title: 'Year 3' },
+    { title: 'Year 4' },
+    { title: 'Year 5 or above' }
+  ];
+
+  // dropdown for faculty
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const faculty = [{ title: 'Art and Social Sciences' },
+    { title: 'Business' },
+    { title: 'Computing' },
+    { title: 'Dentistry' },
+    { title: 'Design and Engineering' },
+    { title: 'Sciences' },
+    { title: 'Law' },
+    { title: 'Medicine' },
+    { title: 'Music' },
+    { title: 'Nursing' },
+    { title: 'Pharmacy' },
+    { title: 'NUS College'}
+  ];
+  
+  // Note: dropdowns reused from other screens
   return (
-    <View style={styles.tabContainer}>
+    <View style={styles.editProfileContainer}>
+      <View style={styles.dropdownYosContainer}>
+        <TouchableOpacity style={styles.dropdownYosButtonStyle}>
+          <Text style={styles.dropdownYosButtonTxtStyle}>Change Profile Picture</Text>
+        </TouchableOpacity>
+      </View>
+
+      <TextInput
+        style={styles.input}
+        onChangeText={onChangeBioText}
+        value={bioText}
+        placeholder='new bio'
+      />
+
+      <TextInput
+        style={styles.input}
+        onChangeText={onChangeUserName}
+        value={userName}
+        placeholder='new username'
+      />
+
+      <View style={styles.dropdownYosContainer}>
+        <SelectDropdown
+            data={Yos}
+            onSelect={(selectedItem) => {
+                console.log(`Yos changed: ${selectedItem.title}`);
+                setSelectedYos(selectedItem);
+            }}
+            renderButton={(selectedItem) => {
+                return (
+                    <View style={styles.dropdownYosButtonStyle}>
+                        <Text style={styles.dropdownYosButtonTxtStyle}>
+                            {(selectedItem && selectedItem.title) || 'Change Year of Study'}
+                        </Text>
+                    </View>
+                );
+            }}
+            renderItem={(item, isSelected) => {
+                return (
+                    <View
+                        style={{
+                            ...styles.dropdownYosItemStyle,
+                            ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                        }}>
+                        <Text style={styles.dropdownYosItemTxtStyle}>{item.title}</Text>
+                    </View>
+                );
+            }}
+            dropdownYosStyle={styles.dropdownYosMenuStyle}
+        />
+      </View>
+
+      <View style={styles.dropdownYosContainer}>
+        <SelectDropdown
+            data={faculty}
+            onSelect={(selectedItem) => {
+                console.log(`Faculty Changed: ${selectedItem.title}`);
+                setSelectedFaculty(selectedItem);
+            }}
+            renderButton={(selectedItem) => {
+                return (
+                    <View style={styles.dropdownYosButtonStyle}>
+                        <Text style={styles.dropdownYosButtonTxtStyle}>
+                            {(selectedItem && selectedItem.title) || 'Change your faculty'}
+                        </Text>
+                    </View>
+                );
+            }}
+            renderItem={(item, isSelected) => {
+                return (
+                    <View
+                        style={{
+                            ...styles.dropdownYosItemStyle,
+                            ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                        }}>
+                        <Text style={styles.dropdownYosItemTxtStyle}>{item.title}</Text>
+                    </View>
+                );
+            }}
+            dropdownGenderStyle={styles.dropdownYosMenuStyle}
+        />
+      </View>
+
+      <View style={styles.updateButtonContainer}>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Update Profile</Text>
+        </TouchableOpacity>
+      </View>
+
     </View>
   );
 }
@@ -1009,5 +1126,72 @@ const styles = StyleSheet.create({
     fontSize: 19,
     textAlign: 'center',
     marginBottom: 10,
-  }, 
+  },
+  input: {
+    backgroundColor: '#d2dbc8',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 20,
+    marginBottom: 20,
+    width: '80%',
+    fontSize: 19,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  dropdownYosContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  dropdownYosButtonStyle: {
+    flex: 1,
+    height: 50,
+    backgroundColor: '#D2DBC8',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  dropdownYosButtonTxtStyle: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+    textAlign: 'center',
+  },
+  dropdownYosMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+    height: 100,
+  },
+  dropdownYosItemStyle: {
+    width: '100%',
+    height: 50,
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#B1BDC8',
+  },
+  dropdownYosItemTxtStyle: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+    textAlign: 'center',
+  },
+  updateButtonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: 30,
+  },
+  editProfileContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
