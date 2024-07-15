@@ -1,53 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { fetchUserMatches } from '../utils/matchFunction';
 import auth from '@react-native-firebase/auth';
+import { fetchPendingRequests } from '../utils/matchFunction';
 
-const MatchListScreen = () => {
-    const navigation = useNavigation()
-    const user = auth().currentUser
-    const [matches, setMatches] = useState([])
+const PendingRequestsScreen = () => {
+    const user = auth().currentUser;
+    const [pendingRequests, setPendingRequests] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const unsubscribe = fetchUserMatches(user.uid, (fetchedMatches) => {
-            const sortedMatches = fetchedMatches.sort((a, b) => {
-                const aTime = a.timeMatched ? a.timeMatched.toDate() : new Date(0);
-                const bTime = b.timeMatched ? b.timeMatched.toDate() : new Date(0);
-                return bTime - aTime;
+        const unsubscribe = fetchPendingRequests(user.uid, (fetchedPendingRequests) => {
+            const sortedRequets = fetchedPendingRequests.sort((a, b) => {
+                const aTime = a.timeCreated ? a.timeCreated.toDate() : new Date(0);
+                const bTime = b.timeCreated ? b.timeCreated.toDate() : new Date(0);
+                return bTime - aTime
             })
-            setMatches(sortedMatches);
+            setPendingRequests(sortedRequets);
             setLoading(false);
         });
 
         return () => unsubscribe();
     }, [user.uid])
 
-    const handleMatchPress = (matchedUserId) => {
-        navigation.navigate('ViewMatchScreen', { matchedUserId })
-    }
-
     if (loading) {
         return (
-            <View style={StyleSheet.loadingContainer}>
+            <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0000ff" />
             </View>
-        )
+        );
     }
 
     return (
         <View style={styles.container}>
             <FlatList
-                data={matches}
+                data={pendingRequests}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => {
                     const requestDate = item.date
                     const requestSlot = item.slot
                     return (
-                        <TouchableOpacity onPress={() => handleMatchPress(item.matchedUser)} style={styles.matchItem}>
-                            <View style={styles.matchContent}>
-                                <Text style={styles.matchDate}>{requestDate}</Text>
+                        <TouchableOpacity onPress={() => viewRequestPress(item.id)} style={styles.requestItem}>
+                            <View style={styles.requestContent}>
+                                <Text style={styles.requestDate}>{requestDate}</Text>
                                 <Text style={styles.matchSlot}>{requestSlot}</Text>
                             </View>
                         </TouchableOpacity>
@@ -58,7 +52,7 @@ const MatchListScreen = () => {
     )
 }
 
-export default MatchListScreen
+export default PendingRequestsScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -70,7 +64,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    matchItem: {
+    requestItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 15,
@@ -78,16 +72,16 @@ const styles = StyleSheet.create({
         borderBottomColor: '#e2e2e2',
         backgroundColor: '#ffffff',
     },
-    matchContent: {
+    requestContent: {
         flex: 1,
         marginLeft: 15,
     },
-    matchDate: {
+    requestDate: {
         fontSize: 20,
         fontWeight: 'bold',
         color: '#333333',
     },
-   matchSlot: {
+   requestSlot: {
         fontSize: 16,
         color: '#666666',
         marginTop: 5,
