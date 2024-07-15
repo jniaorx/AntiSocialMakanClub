@@ -15,6 +15,7 @@ import MyImage from '../assets/logo-no-background.png';
 import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
 import Chats from './ChatListScreen';
 import ViewMatch from './MatchListScreen';
+import PendingRequests from './PendingRequestsScreen';
 
 // First tab: Home 
 function HomeTab() {
@@ -122,8 +123,8 @@ function RequestCreation({ navigation }) {
       userId: user.uid,
       matchedUser: '',
       isMatched: false,
-      // isExpired: false
       timeMatched: null,
+      timeCreated: firestore.FieldValue.serverTimestamp(),
     };
   
     // to make sure that no duplicated request is made by the same user
@@ -410,9 +411,9 @@ function Profile({navigation}) {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
-          onPress={() => navigation.navigate('Previous Requests')} 
+          onPress={() => navigation.navigate('Pending Requests')} 
           style={styles.otherButton}>
-          <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Previous Requests</Text>
+          <Text style={{fontSize: 17, color: 'black', fontWeight: 'bold'}}>Pending Requests</Text>
         </TouchableOpacity>
       </View>
 
@@ -456,19 +457,21 @@ const ProfileStack = () => {
         })}
       />
       <Stack.Screen name="Edit Profile" component={EditProfile} />
-      <Stack.Screen name="Previous Requests" component={PreviousRequests}/>
+      <Stack.Screen name="Pending Requests" component={PendingRequests}/>
       <Stack.Screen name="Settings" component={SettingsStack} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }
 
-// PreviousRequests nested in Profile
-const PreviousRequests = () => {
+/*
+// PendingRequests nested in Profile
+const PendingRequests = () => {
   return (
     <View style={styles.tabContainer}>
     </View>
   );
 }
+*/
 
 // To lead to other pages in Settings
 const SettingsStack = () => {
