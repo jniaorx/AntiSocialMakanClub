@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { fetchPendingRequests } from '../utils/matchFunction';
+import { useNavigation } from '@react-navigation/native';
 
 const PendingRequestsScreen = () => {
+    const navigation = useNavigation()
     const user = auth().currentUser;
     const [pendingRequests, setPendingRequests] = useState([])
     const [loading, setLoading] = useState(true)
@@ -21,6 +23,10 @@ const PendingRequestsScreen = () => {
 
         return () => unsubscribe();
     }, [user.uid])
+
+    const viewRequestPress = (pendingRequestId) => {
+        navigation.navigate('ViewRequestScreen', { pendingRequestId })
+    }
 
     if (loading) {
         return (
