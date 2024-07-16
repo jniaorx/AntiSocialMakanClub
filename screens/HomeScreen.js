@@ -2,7 +2,7 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useEffect, useState } from 'react';
-import { TextInput, StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator, ScrollView } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -10,7 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Title } from 'react-native-paper';
+import { Title, List } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
 import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
 import Chats from './ChatListScreen';
@@ -625,9 +625,78 @@ const ReportAbuse = () => {
 
 // FAQ page
 const FAQ = () => {
+  const [expanded1, setExpanded1] = useState(false);
+  const handlePress1 = () => setExpanded1(!expanded1);
+  const [expanded2, setExpanded2] = useState(false);
+  const handlePress2 = () => setExpanded2(!expanded2);
+  const [expanded3, setExpanded3] = useState(false);
+  const handlePress3 = () => setExpanded3(!expanded3);
+  const [expanded4, setExpanded4] = useState(false);
+  const handlePress4 = () => setExpanded4(!expanded4);
+  const [expanded5, setExpanded5] = useState(false);
+  const handlePress5 = () => setExpanded5(!expanded5);
+
   return (
-    <View style={styles.tabContainer}>
-    </View>
+    <ScrollView style={{flex: 1}}>
+      <View style={styles.sectionContainer}>
+        <List.Section title="Managing Your AntiSocialMakanClub Account">
+          <List.Accordion 
+            title="Who Can Use Our App"
+            expanded={expanded1}
+            onPress={handlePress1}>
+            <List.Item 
+              title="NUS Students"
+              description="Only NUS students can register for an account with their NUS email."/>
+          </List.Accordion>
+
+          <List.Accordion 
+            title="Account Security"
+            expanded={expanded2}
+            onPress={handlePress2}>
+            <List.Item 
+              title="Changing Your Password"
+              description="Find the Change Password option under Profile Settings."/>
+          </List.Accordion>
+
+          <List.Accordion 
+            title="Updating Your Profile Data"
+            expanded={expanded3}
+            onPress={handlePress3}>
+            <List.Item 
+              title="Edit Your Profile"
+              description="Edit your profile by clicking on the Pen Icon on the top right corner of the Profile Page."/>
+          </List.Accordion>
+        </List.Section>
+      </View>
+
+      <View style={styles.section2Container}>
+        <List.Section title="How to">
+          <List.Accordion 
+            title="Get a Meal Buddy"
+            expanded={expanded4}
+            onPress={handlePress4}>
+            <List.Item 
+              title="Create a Matching Request"
+              description="Select both date and a time slot and click Create. Other preferences are optional."/>
+            <List.Item
+              title="Find Your Match"
+              description="Click on the View Match tab to find your matches."/>
+            <List.Item 
+              title="Chat with Your Match"
+              description="Click on your match under View Match and click the Chat button."/>  
+          </List.Accordion>
+
+          <List.Accordion 
+            title="Report another user"
+            expanded={expanded5}
+            onPress={handlePress5}>
+            <List.Item 
+              title="Report Abuse Portal"
+              description="Submit a report under the Portal at Profile Settings."/>
+          </List.Accordion>
+        </List.Section>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -1193,5 +1262,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  sectionContainer: {
+    width: '90%',
+    backgroundColor: '#D2DBC8',
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  section2Container: {
+    width: '90%',
+    backgroundColor: '#D2DBC8',
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginBottom: 20,
   },
 });
