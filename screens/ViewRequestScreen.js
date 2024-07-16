@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 
@@ -30,6 +30,35 @@ const ViewRequestScreen = ({ route, navigation }) => {
         setLoading(false);
     }
 
+    const handleCancelRequest = async() => {
+        try {
+            await firestore().collection('requests').doc(pendingRequestId).delete();
+            console.log('Request deleted successfully')
+
+            navigation.goBack();
+        } catch (error) {
+            console.error('Error deleting request:', error)
+        }
+    }
+
+    const showCancelConfirmation = () => {
+        Alert.alert(
+            "Cancel Request",
+            "Are you sure you want to cancel this request?",
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("No Pressed"),
+                },
+                {
+                    text: "Yes",
+                    onPress: () => handleCancelRequest()
+                }
+            ],
+            { cancelable: false }
+        )
+    }
+
     useEffect(() => {
         getRequestDetails();
     }, [pendingRequestId]);
@@ -49,7 +78,7 @@ const ViewRequestScreen = ({ route, navigation }) => {
             <Text style={styles.info}>Canteen: {request.canteen}</Text>
             <Text style={styles.info}>Language: {request.language}</Text>
             <Text style={styles.info}>Same Gender: {request.sameGender}</Text>
-            <TouchableOpacity style={styles.cancelContainer}>
+            <TouchableOpacity onPress={showCancelConfirmation} style={styles.cancelContainer}>
                 <Text style={styles.cancel}>Cancel Request</Text>
             </TouchableOpacity>
         </View>
