@@ -13,10 +13,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Title, List } from 'react-native-paper';
 import MyImage from '../assets/logo-no-background.png';
 import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
+import * as ImagePicker from 'expo-image-picker';
 import Chats from './ChatListScreen';
 import ViewMatch from './MatchListScreen';
 import PendingRequests from './PendingRequestsScreen';
-import * as ImagePicker from 'expo-image-picker';
+import ChangePassword from './ChangePasswordScreen';
 
 // First tab: Home 
 function HomeTab() {
@@ -500,6 +501,7 @@ const ProfileStack = () => {
       />
       <Stack.Screen name="Edit Profile" component={EditProfile} />
       <Stack.Screen name="Pending Requests" component={PendingRequests}/>
+      <Stack.Screen name="Change Password" component={ChangePassword}/>
       <Stack.Screen name="Setting" component={SettingsStack} options={{headerShown: false}} />
     </Stack.Navigator>
   )
@@ -520,7 +522,6 @@ const SettingsStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Settings" component={Settings} />
-      <Stack.Screen name="Change Password" component={ChangePassword} />
       <Stack.Screen name="About Us" component={AboutUs}/>
       <Stack.Screen name="Report Abuse" component={ReportAbuse}/>
       <Stack.Screen name="Frequently Asked Questions" component={FAQ}/>
@@ -618,13 +619,6 @@ const Settings = ({navigation}) => {
   );
 }
 
-// Change password page
-const ChangePassword = () => {
-  return (
-    <View style={styles.tabContainer}>
-    </View>
-  );
-}
 
 // About page
 const AboutUs = () => {
