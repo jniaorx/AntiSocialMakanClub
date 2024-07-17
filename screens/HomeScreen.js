@@ -20,7 +20,7 @@ import PendingRequests from './PendingRequestsScreen';
 // First tab: Home 
 function HomeTab() {
   return (
-    <View style={styles.homeContainer}>
+    <ScrollView style={{flex: 1}}>
       <View style={styles.wlcContainer}>
         <Text style={styles.wlcTxt}>WELCOME BACK</Text>
       </View>
@@ -30,7 +30,48 @@ function HomeTab() {
       </View>
 
       <Image source={MyImage} style={styles.image}/>
-    </View>
+
+      <View style={styles.guideContainer}>
+        <Text style={styles.headingText}>COMMUNITY GUIDELINES</Text>
+
+        <Text style={styles.guideText}>
+          1. Respectful Profiles: Do not create accounts with offensive content,
+          including obscenity or profanity. Ensure your profile information is 
+          appropriate and respectful. 
+        </Text>
+
+        <Text style={styles.guideText}>
+          2. Honest and Legal Behaviour: Do not use your account to engage in 
+          misleading, deceptive or illegal activities.
+        </Text>
+
+        <Text style={styles.guideText}>
+          3. Authenticity and Identity: Do not impersonate other individuals or entities 
+          without their explicit consent. Do not create multiple accounts. 
+        </Text>
+
+        <Text style={styles.guideText}>
+          4. Harassment or bullying: Any form of abuse is prohibited within our app. 
+          Engage with fellow users politely and with respect. 
+        </Text>
+
+        <Text style={styles.guideText}>
+          5. Privacy and Confidentiality: Do not share or request personal information 
+          such as addresses, phone numbers or financial details. 
+        </Text>
+
+        <Text style={styles.guideText}>
+          6. Inclusive and Safe Environment: Avoid discriminatory language or behaviour 
+          when interacting with other users.
+        </Text>
+
+        <Text style={styles.guideText}>
+          7. Reporting and Consequences: Users can report accounts that violate 
+          any of the guidelines above. Violations may result in temporary suspensions or 
+          permanent bans of the offending account, depending on the severity. 
+        </Text>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -587,7 +628,7 @@ const ChangePassword = () => {
 // About page
 const AboutUs = () => {
   return (
-    <View style={styles.homeContainer}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Image source={MyImage} style={styles.image}/>
 
       <View style={styles.aboutContainer}>
@@ -942,12 +983,7 @@ const styles = StyleSheet.create({
     width: 375,
     height: 300,
     resizeMode: 'contain',
-  },
-  homeContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 50,
+    alignSelf: 'center',
   },
   tabContainer: {
     flex: 1,
@@ -976,6 +1012,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 200,
+    marginBottom: 10,
   },
   wlcTxt: {
     fontSize: 25,
@@ -986,8 +1025,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
     marginBottom: -5,
+    alignSelf: 'center',
   },
   altText: {
     fontSize: 18,
@@ -1337,5 +1376,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  guideContainer: {
+    width: '90%',
+    alignItems: 'left',
+    justifyContent:'space-evenly',
+    alignSelf: 'center',
+    marginTop: 10,
+    marginBottom: 15,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#D2DBC8',
+  },
+  guideText: {
+    fontSize: 16,
+    fontWeight: '30',
+    marginBottom: 10,
+  },
+  headingText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    marginBottom: 15,
   },
 });
