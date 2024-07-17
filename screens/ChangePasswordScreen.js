@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native'
 import React, { useState } from 'react'
 import auth from '@react-native-firebase/auth';
 
@@ -7,13 +7,13 @@ const ChangePasswordScreen = ({ navigation }) => {
 
     const handlePasswordReset = async () => {
         if (!email) {
-            alert('Error', 'Please enter your email address');
+            Alert.alert('Error','Please enter your email address');
             return;
         }
 
         try {
             await auth().sendPasswordResetEmail(email);
-            alert('Password reset email sent successfully');
+            Alert.alert('Success','Password reset email sent successfully');
             navigation.goBack();
         } catch (error) {
             alert('Error', error.message)
