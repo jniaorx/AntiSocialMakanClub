@@ -16,6 +16,7 @@ import { getUsers, getRequests, findMatches } from '../utils/matchingAlgorithm';
 import Chats from './ChatListScreen';
 import ViewMatch from './MatchListScreen';
 import PendingRequests from './PendingRequestsScreen';
+import * as ImagePicker from 'expo-image-picker';
 
 // First tab: Home 
 function HomeTab() {
@@ -747,6 +748,7 @@ const EditProfile = ({ navigation }) => {
   const [username, setUsername] = useState(''); 
   const [selectedYos, setSelectedYos] = useState(null);
   const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
   const [loading, setLoading] = useState(true);
   const user = auth().currentUser;
 
@@ -798,11 +800,15 @@ const EditProfile = ({ navigation }) => {
 
   const handleSaveProfile = async () => {
     try {
+      setLoading(true);
       const updateData = {};
       if (bioText) updateData.bio = bioText;
       if (username) updateData.username = username;
       if (selectedYos) updateData.yos = selectedYos.title;
       if (selectedFaculty) updateData.faculty = selectedFaculty.title;
+      if (profilePicture) {
+        updateData.profilePicture = { uri: profilePicture.uri };
+      }
 
       await firestore().collection('users').doc(user.uid).update(updateData);
       alert('Profile updated successfully!')
@@ -811,24 +817,37 @@ const EditProfile = ({ navigation }) => {
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile')
+    } finally {
+      setLoading(false);
     }
   }
 
-  /*
-  if (loading) {
-    return (
-        <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-    );
-  } 
-  */
+  const handlePickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+        return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+        setProfilePicture({ uri: result.assets[0].uri });
+        console.log("Selected image with URI:", result.assets[0].uri);
+    }
+};
+
   
   // Note: dropdowns reused from other screens
   return (
     <View style={styles.editProfileContainer}>
       <View style={styles.dropdownYosContainer}>
-        <TouchableOpacity style={styles.dropdownYosButtonStyle}>
+        <TouchableOpacity onPress={handlePickImage} style={styles.dropdownYosButtonStyle}>
           <Text style={styles.dropdownYosButtonTxtStyle}>Change Profile Picture</Text>
         </TouchableOpacity>
       </View>
