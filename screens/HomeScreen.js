@@ -2,7 +2,7 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useEffect, useState } from 'react';
-import { TextInput, StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator, ScrollView, TurboModuleRegistry } from 'react-native';
+import { TextInput, StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator, ScrollView, Alert } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -382,21 +382,17 @@ function Profile({navigation}) {
   };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userDoc = await firestore().collection('users').doc(user.uid).get()
-        if (userDoc.exists) {
-          setUserData(userDoc.data())
+    const unsubscribe = firestore().collection('users').doc(user.uid)
+      .onSnapshot((doc) => {
+        if (doc.exists) {
+          setUserData(doc.data());
         } else {
-          console.log('No such document!')
+          console.log('No such document!');
         }
-      } catch (error) {
-        console.error('Error fetching user data: ', error)
-      }
-    }
+      })
 
-    fetchUserData();
-  }, []);
+      return () => unsubscribe();
+  }, [user.uid]);
 
   if (!userData) {
     return (
@@ -436,10 +432,14 @@ function Profile({navigation}) {
       </View>
 
       <View style={styles.otherInfoContainer}>
-        <View style={styles.userInfoRow}>
-          <AntDesign name="mail" color="#ff000" size={22}/>
-          <Text style={{color:"#ff000", marginLeft: 10, fontSize: 17}}>{user.email}</Text>
-        </View>
+        {userData.emailShown && (
+          <View style={styles.userInfoRow}>
+            <AntDesign name="mail" color="#ff000" size={22} />
+            <Text style={{ color: "#ff000", marginLeft: 10, fontSize: 17 }}>
+              {user.email}
+            </Text>
+          </View>
+        )}
 
         <View style={styles.userInfoRow}>
           <AntDesign name="book" color="#ff000" size={22}/>
@@ -543,13 +543,33 @@ const Settings = ({navigation}) => {
 
   // toggle switch for email
   const [isEmailShown, setIsEmailShown] = useState(false);
-  const toggleEmail = () => {
-    setIsEmailShown(prevState => {
-      const newState = !prevState;
-      console.log("Email: ", newState ? "Shown" : "Not Shown");
-      return newState;
-    });
-  };
+  const user = auth().currentUser
+
+  useEffect(() => {
+    const fetchEmailVisibility = async () => {
+      try {
+        const userProfile = await firestore().collection('users').doc(user.uid).get();
+        if (userProfile.exists) {
+          setIsEmailShown(userProfile.data().emailShown || false);
+        }
+      } catch (error) {
+        console.error('Error fetching email visibility:', error);
+      }
+    }
+
+    fetchEmailVisibility();
+  }, [user.uid]);
+
+  const toggleEmail = async () => {
+    setIsEmailShown(previousState => !previousState);
+    try {
+      await firestore().collection('users').doc(user.uid).update({ emailShown: !isEmailShown });
+      Alert.alert('Success', 'Email visibility updated successfully!')
+    } catch (error) {
+      console.error('Error updating email visibility:', error);
+      Alert.alert('Error', 'Failed to update email visibility');
+    }
+  }
 
   return (
     <View style={styles.tabContainer}>
