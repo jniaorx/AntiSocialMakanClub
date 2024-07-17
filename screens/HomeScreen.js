@@ -2,7 +2,7 @@
 navigable between 5 tabs: Home, Create Request, View Match, Chats and Profile
 */
 import React, { useEffect, useState } from 'react';
-import { TextInput, StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator, ScrollView } from 'react-native';
+import { TextInput, StyleSheet, Text, TouchableOpacity, View, Switch, Image, ActivityIndicator, ScrollView, TurboModuleRegistry } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -742,12 +742,15 @@ const FAQ = () => {
 }
 
 // Edit Profile nestled in Profile Tab
-const EditProfile = () => {
-  const [bioText, onChangeBioText] = useState('');
-  const [userName, onChangeUserName] = useState(''); 
+const EditProfile = ({ navigation }) => {
+  const [bioText, setBioText] = useState('');
+  const [username, setUsername] = useState(''); 
+  const [selectedYos, setSelectedYos] = useState(null);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const user = auth().currentUser;
 
   // dropdown for Yos
-  const [selectedYos, setSelectedYos] = useState(null);
   const Yos = [{ title: 'Year 1' },
     { title: 'Year 2' },
     { title: 'Year 3' },
@@ -756,7 +759,6 @@ const EditProfile = () => {
   ];
 
   // dropdown for faculty
-  const [selectedFaculty, setSelectedFaculty] = useState(null);
   const faculty = [{ title: 'Art and Social Sciences' },
     { title: 'Business' },
     { title: 'Computing' },
@@ -770,6 +772,57 @@ const EditProfile = () => {
     { title: 'Pharmacy' },
     { title: 'NUS College'}
   ];
+
+  /*
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const userProfile = await firestore().collection('users').doc(user.uid).get();
+        if (userProfile.exists) {
+          const { bio, username, yos, faculty } = userProfile.data();
+          setBioText(bio || '');
+          setUsername(username || '');
+          setSelectedYos(yos || null);
+          setSelectedFaculty(faculty || null)
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error)
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProfileData();
+  }, [user.uid])
+  */
+
+  const handleSaveProfile = async () => {
+    try {
+      const updateData = {};
+      if (bioText) updateData.bio = bioText;
+      if (username) updateData.username = username;
+      if (selectedYos) updateData.yos = selectedYos.title;
+      if (selectedFaculty) updateData.faculty = selectedFaculty.title;
+
+      await firestore().collection('users').doc(user.uid).update(updateData);
+      alert('Profile updated successfully!')
+      
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile')
+    }
+  }
+
+  /*
+  if (loading) {
+    return (
+        <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+    );
+  } 
+  */
   
   // Note: dropdowns reused from other screens
   return (
@@ -782,15 +835,15 @@ const EditProfile = () => {
 
       <TextInput
         style={styles.input}
-        onChangeText={onChangeBioText}
+        onChangeText={setBioText}
         value={bioText}
         placeholder='new bio'
       />
 
       <TextInput
         style={styles.input}
-        onChangeText={onChangeUserName}
-        value={userName}
+        onChangeText={setUsername}
+        value={username}
         placeholder='new username'
       />
 
@@ -857,7 +910,7 @@ const EditProfile = () => {
       </View>
 
       <View style={styles.updateButtonContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={handleSaveProfile} style={styles.button}>
           <Text style={styles.buttonText}>Update Profile</Text>
         </TouchableOpacity>
       </View>
@@ -1318,6 +1371,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignSelf: 'center',
     marginBottom: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   guideContainer: {
     width: '90%',
