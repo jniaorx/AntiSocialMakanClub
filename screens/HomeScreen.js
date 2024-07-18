@@ -564,10 +564,8 @@ const Settings = ({navigation}) => {
     setIsEmailShown(previousState => !previousState);
     try {
       await firestore().collection('users').doc(user.uid).update({ emailShown: !isEmailShown });
-      Alert.alert('Success', 'Email visibility updated successfully!')
     } catch (error) {
       console.error('Error updating email visibility:', error);
-      Alert.alert('Error', 'Failed to update email visibility');
     }
   }
 
@@ -675,6 +673,7 @@ const AboutUs = () => {
 const ReportAbuse = () => {
   const [reportUser, setReportUser] = useState('');
   const [reason, setSelectedReason] = useState(null);
+  const user = auth().currentUser
 
   // dropdown for reasons
   const reportReason = [{ title: 'Offensive Content' },
@@ -683,6 +682,29 @@ const ReportAbuse = () => {
                         { title: 'Harassment or bullying' },
                         { title: 'Discriminatory Behaviour' },
   ];
+
+  const handleSubmitReport = async () => {
+    if (!reportUser || !reason) {
+      alert('Please enter a username and select a reason.');
+      return;
+    }
+
+    const report = {
+      reportedUser: reportUser,
+      reason: reason,
+      userId: user.uid,
+      timeReported: firestore.FieldValue.serverTimestamp(),
+    };
+
+    try {
+    const reportRef = await firestore().collection('reports').add(report);
+
+    console.log('Report submitted!', report);
+    Alert.alert('Report submitted successfully', 'We will review your report and take action as soon as possible!')
+    } catch (error) {
+      console.error('Error submitting report: ', error);
+    }
+  }
   
   return (
     <View style={{flex: 1, justifyContent:'center', alignItems: 'center'}}>
@@ -729,7 +751,7 @@ const ReportAbuse = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={handleSubmitReport}style={styles.button}>
           <Text style={styles.buttonText}>Submit Report</Text>
         </TouchableOpacity>
       </View>
