@@ -771,6 +771,8 @@ const FAQ = () => {
   const handlePress4 = () => setExpanded4(!expanded4);
   const [expanded5, setExpanded5] = useState(false);
   const handlePress5 = () => setExpanded5(!expanded5);
+  const [expanded6, setExpanded6] = useState(false);
+  const handlePress6 = () => setExpanded6(!expanded6);
 
   return (
     <ScrollView style={{flex: 1}}>
@@ -829,6 +831,18 @@ const FAQ = () => {
             <List.Item 
               title="Report Abuse Portal"
               description="Submit a report under the Portal at Profile Settings."/>
+          </List.Accordion>
+
+          <List.Accordion 
+            title="Cancel a request"
+            expanded={expanded6}
+            onPress={handlePress6}>
+            <List.Item 
+              title="Pending Requests"
+              description="View all the requests that can be cancelled by clicking into Pending Requests."/>
+            <List.Item 
+              title="Cancel Request"
+              description="Click into the request that you want to cancel and click the Cancel Request button."/>
           </List.Accordion>
         </List.Section>
       </View>
