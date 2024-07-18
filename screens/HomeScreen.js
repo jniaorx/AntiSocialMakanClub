@@ -673,8 +673,66 @@ const AboutUs = () => {
 
 // Report Abuse page
 const ReportAbuse = () => {
+  const [reportUser, setReportUser] = useState('');
+  const [reason, setSelectedReason] = useState(null);
+
+  // dropdown for reasons
+  const reportReason = [{ title: 'Offensive Content' },
+                        { title: 'Deceptive Activities' },
+                        { title: 'Impersonating another person' },
+                        { title: 'Harassment or bullying' },
+                        { title: 'Discriminatory Behaviour' },
+  ];
+  
   return (
-    <View style={styles.tabContainer}>
+    <View style={{flex: 1, justifyContent:'center', alignItems: 'center'}}>
+      <Text style={styles.reportText}>Username of the account you wish to report:</Text>
+
+      <TextInput
+        style={styles.inputReport}
+        onChangeText={setReportUser}
+        value={reportUser}
+        placeholder='username'
+      />
+
+      <Text style={styles.reportText}>Reasons for reporting this account:</Text>
+
+      <View style={styles.dropdownReasonsContainer}>
+        <SelectDropdown
+            data={reportReason}
+            onSelect={(selectedItem) => {
+                console.log(`report reason chosen: ${selectedItem.title}`);
+                setSelectedReason(selectedItem);
+            }}
+            renderButton={(selectedItem) => {
+                return (
+                    <View style={styles.dropdownYosButtonStyle}>
+                        <Text style={styles.dropdownYosButtonTxtStyle}>
+                            {(selectedItem && selectedItem.title) || 'Select A Reason'}
+                        </Text>
+                    </View>
+                );
+            }}
+            renderItem={(item, isSelected) => {
+                return (
+                    <View
+                        style={{
+                            ...styles.dropdownYosItemStyle,
+                            ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                        }}>
+                        <Text style={styles.dropdownYosItemTxtStyle}>{item.title}</Text>
+                    </View>
+                );
+            }}
+            dropdownYosStyle={styles.dropdownYosMenuStyle}
+        />
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Submit Report</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -1330,7 +1388,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '80%',
     fontSize: 19,
-    fontWeight: 'bold',
     textAlign: 'center',
   },
   dropdownYosContainer: {
@@ -1431,5 +1488,30 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
     marginBottom: 15,
+  },
+  reportContainer: {
+    marginTop: 10,
+    marginBottom: 50,
+  },
+  reportText: {
+    fontSize: 17,
+    marginBottom: 10,
+  },
+  inputReport: {
+    backgroundColor: '#D2DBC8',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    fontSize: 17,
+    textAlign: 'center',
+    marginBottom: 25,
+    width: '80%',
+  },
+  dropdownReasonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%',
+    marginBottom: 70,
   },
 });
