@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -23,6 +24,11 @@ import ViewRequestScreen from './screens/ViewRequestScreen';
 
 const Stack = createNativeStackNavigator();
 
+// Register background handler
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  console.log("Message handled in the background:", remoteMessage);
+})
+
 export default function App() {
   // set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
@@ -30,9 +36,10 @@ export default function App() {
   const [profileCompleted, setProfileCompleted] = useState(false);
 
   // Handle user state changes
-  function onAuthStateChanged(user) {
+  const onAuthStateChanged = async (user) => {
     setUser(user);
     if (initializing) setInitializing(false);
+
     if (user) {
       firestore()
         .collection('users')
@@ -48,9 +55,79 @@ export default function App() {
     }
   }
 
+  // Request user permission for notifications
+  const requestUserPermission = async () => {
+    try {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        console.log('Authorization status:', authStatus);
+      }
+    } catch (error) {
+      console.error('Error requesting permission:', error);
+    }
+  }
+
+  // Store FCM token in Firestore
+  const storeTokenInFirestore = async (token) => {
+    if (user) {
+      try {
+        await firestore()
+          .collection('users')
+          .doc(user.uid)
+          .update({ fcmToken: token })
+      } catch (error) {
+        console.error('Error storing FCM token:', error)
+      }
+    }
+  }
+
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+
+    const setUpMessaging = async() => {
+      await requestUserPermission();
+      try {
+        const token = await messaging().getToken();
+        console.log('FCM Token:', token);
+        storeTokenInFirestore(token);
+      } catch (error) {
+        console.error('Error fetching FCM token:', error);
+      }
+
+      // check whether an initial notification is available
+      messaging()
+        .getInitialNotification()
+        .then((remoteMessage) => {
+          if (remoteMessage) {
+            console.log(
+              "Notification caused app to open from quit state:", remoteMessage.notification
+            )
+          }
+        })
+
+        // Assume a message-notofication contains a "type" property in the data payload of the screen to open
+        messaging().onNotificationOpenedApp((remoteMessage) => {
+          console.log("Notification caused app to open from background state:", remoteMessage.notification)
+        })
+        
+        // Listen for incoming messages
+        const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+          Alert.alert("A new FCM message arrived!", JSON.stringify(remoteMessage));
+        })
+        
+        // Clean up listeners on component unmount
+        return () => {
+          unsubscribe()
+        }
+    }
+
+    setUpMessaging();
+
+    return () => subscriber(); // unsubscribe on unmount
   }, []);
 
   if (initializing) return null;
