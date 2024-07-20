@@ -692,7 +692,7 @@ const ReportAbuse = () => {
         style={styles.inputReport}
         onChangeText={setReportUser}
         value={reportUser}
-        placeholder='username'
+        placeholder='@username'
       />
 
       <Text style={styles.reportText}>Reasons for reporting this account:</Text>
