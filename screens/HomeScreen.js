@@ -570,7 +570,7 @@ const Settings = ({navigation}) => {
   }
 
   return (
-    <View style={styles.tabContainer}>
+    <View style={{flex: 1, alignItems: 'center'}}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Account Settings</Text>
       </View>
@@ -580,17 +580,6 @@ const Settings = ({navigation}) => {
         <TouchableOpacity onPress={() => navigation.navigate('Change Password')}>
           <AntDesign name="rightcircle" color="#767577" size={20}/>
         </TouchableOpacity>
-      </View>
-
-      <View style={styles.optionContainer}>
-        <Text style={styles.optionText}>Notifications</Text>
-        <Switch
-          trackColor={{false: '#767577', true: '#D2DBC8'}}
-          thumbColor={'#D2DBC8'}
-          onValueChange={toggle}
-          value={isOn}
-          style={styles.switch}
-        />
       </View>
 
       <View style={styles.headerContainer}>
