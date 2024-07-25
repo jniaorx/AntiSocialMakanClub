@@ -141,7 +141,11 @@ const ViewMatchScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Image source={matchedUser.profilePicture} style={styles.image} />
+            {matchedUser.profilePicture && (
+                        <Image
+                            source={{ uri: matchedUser.profilePicture }}
+                            style={styles.image} />
+            )}
             <View style={styles.detailsContainer}>
                 <Text style={styles.name}>{matchedUser.name}</Text>
                 <Text style={styles.username}>@{matchedUser.username}</Text>
