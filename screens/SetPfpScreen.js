@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 import { useRoute } from '@react-navigation/native';
 
 const defaultProfilePicture = require('../assets/user-icon.png');
@@ -10,16 +11,19 @@ const defaultProfilePicture = require('../assets/user-icon.png');
 const SetPfpScreen = ({ navigation }) => {
     const route = useRoute();
     const { name, username, selectedGender, selectedYos, selectedFaculty, bio } = route.params;
-    const [profilePicture, setProfilePicture] = useState(null);
-
-    useEffect(() => {
-        const defaultUri = Image.resolveAssetSource(defaultProfilePicture).uri;
-        setProfilePicture({ uri: defaultUri });
-        console.log("Initialized profilePicture with URI:", defaultUri);
-    }, []);
+    const [profilePicture, setProfilePicture] = useState({ uri: Image.resolveAssetSource(defaultProfilePicture).uri });
 
     const handleSaveProfile = async () => {
         const user = auth().currentUser;
+
+        let profilePictureUrl = profilePicture.uri;
+        if (profilePicture.uri !== Image.resolveAssetSource(defaultProfilePicture).uri) {
+            const uploadUri = profilePicture.uri;
+            const filename = `${user.uid}/${new Date().getTime()}.jpg`;
+            const storageRef = storage().ref(filename);
+            await storageRef.putFile(uploadUri);
+            profilePictureUrl = await storageRef.getDownloadURL();
+        }
 
         const userData = {
             name,
@@ -27,10 +31,11 @@ const SetPfpScreen = ({ navigation }) => {
             gender: selectedGender.title,
             yos: selectedYos.title,
             faculty: selectedFaculty.title,
-            profilePicture: profilePicture,
+            fcmToken:"",
+            profilePicture: profilePictureUrl,
         };
 
-        console.log("Saving profile with URI:", profilePicture);
+        console.log("Saving profile with URL:", profilePictureUrl);
 
         if (bio) {
             userData.bio = bio;
@@ -40,7 +45,7 @@ const SetPfpScreen = ({ navigation }) => {
             await firestore().collection('users').doc(user.uid).set(userData);
             await user.updateProfile({
                 displayName: name,
-                photoURL: profilePicture.uri,
+                photoURL: profilePictureUrl,
             });
 
             // Reload the user profile to reflect the updated photoURL

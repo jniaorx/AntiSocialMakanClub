@@ -6,6 +6,7 @@ import { TextInput, StyleSheet, Text, TouchableOpacity, View, Switch, Image, Act
 import SelectDropdown from 'react-native-select-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -414,7 +415,11 @@ function Profile({navigation}) {
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.userInfoContainer}>
         <View style={{ flexDirection: 'row', marginTop: 30}}>
-          <Image source={userData.profilePicture} style={styles.pfp} />
+        {userData.profilePicture && (
+                        <Image
+                            source={{ uri: userData.profilePicture }}
+                            style={styles.pfp} />
+        )}
         </View>
 
         < Title style={[styles.title, {
@@ -914,8 +919,16 @@ const EditProfile = ({ navigation }) => {
       if (username) updateData.username = username;
       if (selectedYos) updateData.yos = selectedYos.title;
       if (selectedFaculty) updateData.faculty = selectedFaculty.title;
-      if (profilePicture) {
-        updateData.profilePicture = { uri: profilePicture.uri };
+      
+      if (profilePicture && profilePicture.uri !== user.photoURL) {
+        const uploadUri = profilePicture.uri;
+        const filename = `${user.uid}/${new Date().getTime()}.jpg`
+        const storageRef = storage.ref(filename);
+        await storageRef.putFile(uploadUri)
+
+        // get the download URL
+        const profilePictureUrl = await storageRef.getDowloadURL();
+        updateData.profilePicture = profilePictureUrl;
       }
 
       await firestore().collection('users').doc(user.uid).update(updateData);
