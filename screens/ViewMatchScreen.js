@@ -47,9 +47,23 @@ const ViewMatchScreen = ({ route, navigation }) => {
         setLoading(false);
     }
 
+    const getCurrentUserDetails = async () => {
+        setLoading(true);
+        const currentUserDetails = await fetchUserDetails(user.uid);
+        setCurrentUser(currentUserDetails);
+        setLoading(false);
+    }
+
     useEffect(() => {
         getUserDetails();
     }, [matchedUserId]);
+
+    useEffect(() => {
+        getCurrentUserDetails();
+    }, [user.uid]);
+
+    
+   
 
     /*
     useEffect(() => {
