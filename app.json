@@ -38,12 +38,19 @@
             "useFrameworks": "static"
           }
         }
-      ]
+      ],
+      [
+      "onesignal-expo-plugin",
+      {
+        "mode": "development"
+      }
+    ]
     ],
     "extra": {
       "eas": {
         "projectId": "512092f2-6598-47f7-9657-db594d177086"
-      }
+      },
+      "oneSignalAppId": "8b1dbaa6-bbc9-4c82-b596-b5e371a2e20f"
     }
   }
 }

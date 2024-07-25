@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
+import { LogLevel, OneSignal } from 'react-native-onesignal';
+import Constants from "expo-constants";
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -52,6 +54,10 @@ export default function App() {
             setProfileCompleted(false);
           }
         })
+
+        OneSignal.login(user.uid);
+    } else {
+      OneSignal.logout();
     }
   }
 
@@ -126,6 +132,9 @@ export default function App() {
     }
 
     setUpMessaging();
+
+    OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+    OneSignal.initialize(Constants.expoConfig.extra.oneSignalAppId);
 
     return () => subscriber(); // unsubscribe on unmount
   }, []);
