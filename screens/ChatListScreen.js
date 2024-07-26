@@ -30,11 +30,11 @@ const ChatListScreen = () => {
     };
 
     const getOtherUserProfilePicture = (profilePictures, currentUserPhotoURL) => {
-        if (profilePictures[0].uri === profilePictures[1].uri) {
-            return profilePictures[0].uri;
+        if (profilePictures[0] === profilePictures[1]) {
+            return profilePictures[0];
         }
 
-        return profilePictures[0].uri === currentUserPhotoURL ? profilePictures[1].uri : profilePictures[0].uri;
+        return profilePictures[0] === currentUserPhotoURL ? profilePictures[1] : profilePictures[0];
     };
 
     const formatTime = (timestamp) => {
