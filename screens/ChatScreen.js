@@ -2,7 +2,7 @@ import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import auth, { firebase } from '@react-native-firebase/auth';
 import {
   renderBubble,
   renderSystemMessage,
@@ -67,12 +67,13 @@ const ChatScreen = ({ navigation, route }) => {
             user: {
               _id: firebaseData.user._id,
               name: firebaseData.user.name,
-              avatar: user.photoURL,
+              avatar: firebaseData.user.avatar,
             },
             // sent: true,
             // received: true,
           }
 
+          // console.log(firebaseData.user.name)
           return data;
         });
 
@@ -100,6 +101,7 @@ const ChatScreen = ({ navigation, route }) => {
         user: {
           _id: user.uid,
           name: user.displayName,
+          avatar: user.photoURL,
         },
       });
 
