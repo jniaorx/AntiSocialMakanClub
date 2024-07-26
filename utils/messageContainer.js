@@ -15,8 +15,8 @@ export const renderBubble = (props) => (
     }}
     */
     wrapperStyle={{
-      left: { backgroundColor: 'white'},
-      right: { backgroundColor: 'blue' },
+      left: { backgroundColor: '#daeced'},
+      right: { backgroundColor: '#4A5D5E' },
     }}
     /*
     bottomContainerStyle={{
