@@ -920,16 +920,15 @@ const EditProfile = ({ navigation }) => {
       if (selectedYos) updateData.yos = selectedYos.title;
       if (selectedFaculty) updateData.faculty = selectedFaculty.title;
       
-      if (profilePicture && profilePicture.uri !== user.photoURL) {
+      if (profilePicture.uri !== Image.resolveAssetSource(defaultProfilePicture).uri) {
         const uploadUri = profilePicture.uri;
-        const filename = `${user.uid}/${new Date().getTime()}.jpg`
-        const storageRef = storage.ref(filename);
-        await storageRef.putFile(uploadUri)
+        const filename = `${user.uid}/${new Date().getTime()}.jpg`;
+        const storageRef = storage().ref(filename);
+        await storageRef.putFile(uploadUri);
 
-        // get the download URL
-        const profilePictureUrl = await storageRef.getDowloadURL();
+        profilePictureUrl = await storageRef.getDownloadURL();
         updateData.profilePicture = profilePictureUrl;
-      }
+    }
 
       await firestore().collection('users').doc(user.uid).update(updateData);
       alert('Profile updated successfully!')
