@@ -908,14 +908,14 @@ const EditProfile = ({ navigation }) => {
       if (username) updateData.username = username;
       if (selectedYos) updateData.yos = selectedYos.title;
       if (selectedFaculty) updateData.faculty = selectedFaculty.title;
-      
-      if (profilePicture.uri !== Image.resolveAssetSource(defaultProfilePicture).uri) {
+
+      if (profilePicture && profilePicture.uri !== user.photoURL) {
         const uploadUri = profilePicture.uri;
         const filename = `${user.uid}/${new Date().getTime()}.jpg`;
         const storageRef = storage().ref(filename);
         await storageRef.putFile(uploadUri);
 
-        profilePictureUrl = await storageRef.getDownloadURL();
+        const profilePictureUrl = await storageRef.getDownloadURL();
         updateData.profilePicture = profilePictureUrl;
     }
 
