@@ -917,6 +917,9 @@ const EditProfile = ({ navigation }) => {
 
         const profilePictureUrl = await storageRef.getDownloadURL();
         updateData.profilePicture = profilePictureUrl;
+        await user.updateProfile({
+          photoURL: profilePictureUrl,
+      });
     }
 
       await firestore().collection('users').doc(user.uid).update(updateData);
