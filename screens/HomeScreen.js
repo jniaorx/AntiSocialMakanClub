@@ -908,31 +908,58 @@ const EditProfile = ({ navigation }) => {
       if (username) updateData.username = username;
       if (selectedYos) updateData.yos = selectedYos.title;
       if (selectedFaculty) updateData.faculty = selectedFaculty.title;
-
+  
+      let profilePictureUrl = user.photoURL;
+  
+      // profile pic update
       if (profilePicture && profilePicture.uri !== user.photoURL) {
         const uploadUri = profilePicture.uri;
         const filename = `${user.uid}/${new Date().getTime()}.jpg`;
         const storageRef = storage().ref(filename);
         await storageRef.putFile(uploadUri);
-
-        const profilePictureUrl = await storageRef.getDownloadURL();
+  
+        profilePictureUrl = await storageRef.getDownloadURL();
         updateData.profilePicture = profilePictureUrl;
+  
+        // update firebase auth photourl
         await user.updateProfile({
           photoURL: profilePictureUrl,
-      });
-    }
-
+        });
+      }
+  
+      // update user doc
       await firestore().collection('users').doc(user.uid).update(updateData);
-      alert('Profile updated successfully!')
-      
+  
+      // update chat pfp
+      const chatsQuery = firestore().collection('chats').where('members', 'array-contains', user.uid);
+      const chatDocs = await chatsQuery.get();
+  
+      const batch = firestore().batch();
+  
+      const batchUpdates = chatDocs.docs.map(async (chatDoc) => {
+        const messagesRef = chatDoc.ref.collection('messages');
+        const messagesSnapshot = await messagesRef.get();
+        messagesSnapshot.forEach((messageDoc) => {
+          batch.update(messageDoc.ref, {
+            'user.avatar': profilePictureUrl
+          });
+        });
+      });
+  
+      await Promise.all(batchUpdates);
+  
+      await batch.commit();
+  
+      alert('Profile updated successfully!');
       navigation.goBack();
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Failed to update profile')
+      alert('Failed to update profile');
     } finally {
       setLoading(false);
     }
-  }
+  };  
+  
 
   const handlePickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
