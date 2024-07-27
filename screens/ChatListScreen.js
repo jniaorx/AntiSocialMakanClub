@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, 
 import { useNavigation } from '@react-navigation/native';
 import { fetchUserChats } from '../utils/chatFunction';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
 
 const ChatListScreen = () => {
@@ -10,16 +11,35 @@ const ChatListScreen = () => {
     const user = auth().currentUser;
     const [chats, setChats] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [otherUserPfps, setOtherUserPfps] = useState({});
 
     useEffect(() => {
-        const unsubscribe = fetchUserChats(user.uid, (fetchedChats) => {
+        const unsubscribe = fetchUserChats(user.uid, async (fetchedChats) => {
+            try {
             const sortedChats = fetchedChats.sort((a, b) => {
                 const aTime = a.recentMessage && a.recentMessage.sentAt ? a.recentMessage.sentAt.toDate() : new Date(0);
                 const bTime = b.recentMessage && b.recentMessage.sentAt ? b.recentMessage.sentAt.toDate() : new Date(0);
                 return bTime - aTime;
             })
             setChats(sortedChats);
+
+            const profilePics = {};
+            for (const chat of sortedChats) {
+                const otherUserId = chat.members.find(member => member !== user.uid)
+                if (otherUserId && !profilePics[otherUserId]) {
+                    const userDoc = await firestore().collection('users').doc(otherUserId).get();
+                    const userData = userDoc.data();
+                    if (userData) {
+                        profilePics[otherUserId] = userData.profilePicture;
+                    }
+                }
+            }
+            setOtherUserPfps(profilePics);
+        } catch (error) {
+            console.error('Error fetching chats:', error);
+        } finally {
             setLoading(false);
+        }
         });
 
         return () => unsubscribe();
@@ -29,13 +49,16 @@ const ChatListScreen = () => {
         navigation.navigate('Chat', { chatId });
     };
 
+    /*
     const getOtherUserProfilePicture = (profilePictures, currentUserPhotoURL) => {
+        console.log(profilePictures)
         if (profilePictures[0] === profilePictures[1]) {
             return profilePictures[0];
         }
 
         return profilePictures[0] === currentUserPhotoURL ? profilePictures[1] : profilePictures[0];
     };
+    */
 
     const formatTime = (timestamp) => {
         const now = moment();
@@ -67,7 +90,8 @@ const ChatListScreen = () => {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => {
                     const participant = item.membersnames.find(member => member !== user.displayName);
-                    const otherUserProfilePicture = getOtherUserProfilePicture(item.profilePics, user.photoURL);
+                    const otherUserId = item.members.find(member => member !== user.uid)
+                    const otherUserProfilePicture = otherUserPfps[otherUserId];
                     const lastMessageTime = item.recentMessage && item.recentMessage.sentAt ? item.recentMessage.sentAt.toDate() : new Date();
                     const formattedTime = item.recentMessage && item.recentMessage.sentAt ? formatTime(lastMessageTime) : '';
                     return (
