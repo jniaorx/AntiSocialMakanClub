@@ -951,9 +951,12 @@ const EditProfile = ({ navigation }) => {
         const messagesRef = chatDoc.ref.collection('messages');
         const messagesSnapshot = await messagesRef.get();
         messagesSnapshot.forEach((messageDoc) => {
-          batch.update(messageDoc.ref, {
-            'user.avatar': profilePictureUrl
-          });
+          const messageData = messageDoc.data();
+          if (messageData.user && messageData.user._id === user.uid) {
+            batch.update(messageDoc.ref, {
+              'user.avatar': profilePictureUrl
+            });
+          }
         });
       });
   
