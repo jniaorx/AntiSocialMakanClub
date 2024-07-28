@@ -536,16 +536,6 @@ const SettingsStack = () => {
 
 // Settings nested in Profile
 const Settings = ({navigation}) => {
-  // toggle switch for notifications
-  const [isOn, setIsOn] = useState(false);
-  const toggle = () => {
-    setIsOn(prevState => {
-      const newState = !prevState;
-      console.log("Notifications: ", newState ? "ON" : "OFF");
-      return newState;
-    });
-  };
-
   // toggle switch for email
   const [isEmailShown, setIsEmailShown] = useState(false);
   const user = auth().currentUser
